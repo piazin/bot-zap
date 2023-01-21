@@ -1,9 +1,8 @@
 import { storage } from '../storage';
-import { IStageParameters } from './stage.dto';
-import { attendantList } from '../constants/attendantList';
 import { downloadingImg } from '../services/download_img.service';
+import { IStageParameters } from './stage.dto';
 
-class SendAttendantList {
+class RequestUserEmail {
   async execute({
     to,
     client,
@@ -17,15 +16,9 @@ class SendAttendantList {
       );
     }
 
-    client.sendListMenu(
-      to,
-      'Selecione um atendente',
-      '',
-      'Clique para selecionar',
-      attendantList
-    );
-    storage[to].stage = 4;
+    client.sendText(to, 'Qual seu email?');
+    storage[to].stage = 6;
   }
 }
 
-export const sendAttendantList = new SendAttendantList();
+export const requestUserEmail = new RequestUserEmail();

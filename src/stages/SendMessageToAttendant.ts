@@ -1,18 +1,19 @@
 import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
 import { attendantsPhoneNumber } from '../constants/attendantList';
+import { invalidOption } from './invalidOption';
 
 class SendMessageToAttendant {
-  execute({
+  async execute({
     to,
     client,
     message,
     messageResponse,
-  }: IStageParameters): void | string {
+  }: IStageParameters): Promise<void | string> {
     const attendantRequest = message.listResponse.title;
 
     if (!message?.listResponse) {
-      client.sendText(to, 'opção invalida');
+      invalidOption.execute({ to, client });
       return;
     }
 
@@ -21,7 +22,7 @@ class SendMessageToAttendant {
     );
 
     if (!thisAttendantExist) {
-      client.sendText(to, 'opção invalida');
+      invalidOption.execute({ to, client });
       return;
     }
 
@@ -35,11 +36,22 @@ class SendMessageToAttendant {
       `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${message.notifyName} te enviou um novo chamado, com o seguinte problema: \n\n ${messageResponse}`
     );
 
+    if (storage[to]?.pathSuportImg) {
+      await client.sendImage(
+        thisAttendantExist.number,
+        storage[to].pathSuportImg,
+        'File suport'
+      );
+    }
+
     client.sendContactVcard(
       thisAttendantExist.number,
       message.from,
       message.notifyName
     );
+
+    client.sendText(to, 'Tudo certo! Em breve o atendente entrara em contato');
+    storage[to].stage = 0;
   }
 }
 

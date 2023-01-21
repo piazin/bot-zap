@@ -1,8 +1,9 @@
 interface IStorage {
   stage: number;
-  user: string;
+  userEmail: string;
   pathSuportImg?: string;
   allStagesCompleted?: boolean;
+  isTicket?: boolean;
 }
 
 export var storage: IStorage = Object.create({});

@@ -4,6 +4,8 @@ import {
   sendAttendantList,
   receiveImageWithTheProblem,
   sendMessageToAttendant,
+  requestUserEmail,
+  openNewTicket,
 } from './stages/_index';
 
 export const stages = [
@@ -26,5 +28,13 @@ export const stages = [
   {
     description: 'Send Message to Attendant',
     stage: sendMessageToAttendant,
+  },
+  {
+    description: 'Request User Email',
+    stage: requestUserEmail,
+  },
+  {
+    description: 'Open New Ticket',
+    stage: openNewTicket,
   },
 ];

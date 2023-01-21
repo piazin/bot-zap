@@ -10,6 +10,6 @@ interface IMessage extends Message {
 export interface IStageParameters {
   to: string;
   client: Whatsapp;
-  message: IMessage;
+  message?: IMessage;
   messageResponse?: string;
 }

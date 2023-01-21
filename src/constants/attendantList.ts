@@ -11,24 +11,12 @@ export const attendantList = [
         description: 'Suporte de Sistemas (Senior/SE Suite)',
       },
       {
-        title: 'Hernando',
+        title: 'Lucas',
         description: 'Suporte de Sistemas (SAP/Frontiline)',
       },
     ],
   },
 ];
-
-interface IAttendantPhoneNumber {
-  Andrey: {
-    number: string;
-  };
-  Sergio: {
-    number: string;
-  };
-  Hernando: {
-    number: string;
-  };
-}
 
 export const attendantsPhoneNumber = [
   {
@@ -40,7 +28,7 @@ export const attendantsPhoneNumber = [
     number: '554396638833@c.us',
   },
   {
-    name: 'Hernando',
-    number: '554391208707@c.us',
+    name: 'Lucas',
+    number: '554398049434@c.us',
   },
 ];

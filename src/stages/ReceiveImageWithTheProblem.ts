@@ -7,8 +7,12 @@ class ReceiveImageWithTheProblem {
       to,
       'Deseja enviar alguma imagem do problema? Se sim, favor encaminhar apenas uma imagem, caso não, digite não.'
     );
-    storage[to].stage = 3;
+    if (storage[to].isTicket) {
+      storage[to].stage = 5;
+      return message.body;
+    }
 
+    storage[to].stage = 3;
     return message.body;
   }
 }
