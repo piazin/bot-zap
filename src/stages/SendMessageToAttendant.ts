@@ -2,9 +2,9 @@ import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
 import { attendantsPhoneNumber } from '../constants/attendantList';
 
-class StageThree {
+class SendMessageToAttendant {
   execute({
-    from,
+    to,
     client,
     message,
     messageResponse,
@@ -12,7 +12,7 @@ class StageThree {
     const attendantRequest = message.listResponse.title;
 
     if (!message?.listResponse) {
-      client.sendText(from, 'opção invalida');
+      client.sendText(to, 'opção invalida');
       return;
     }
 
@@ -21,12 +21,12 @@ class StageThree {
     );
 
     if (!thisAttendantExist) {
-      client.sendText(from, 'opção invalida');
+      client.sendText(to, 'opção invalida');
       return;
     }
 
     client.sendText(
-      from,
+      to,
       `Estou enviando o seu problema para o atendente ${attendantRequest}.`
     );
 
@@ -34,7 +34,13 @@ class StageThree {
       thisAttendantExist.number,
       `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${message.notifyName} te enviou um novo chamado, com o seguinte problema: \n\n ${messageResponse}`
     );
+
+    client.sendContactVcard(
+      thisAttendantExist.number,
+      message.from,
+      message.notifyName
+    );
   }
 }
 
-export const stageThree = new StageThree();
+export const sendMessageToAttendant = new SendMessageToAttendant();

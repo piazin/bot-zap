@@ -1,20 +1,20 @@
 import { storage } from '../storage';
 
 type RequestStage = {
-  from: string;
+  to: string;
 };
 
 export class StageService {
-  getStage({ from }: RequestStage): number {
-    if (storage[from]) {
-      return storage[from].stage;
+  getStage({ to }: RequestStage): number {
+    if (storage[to]) {
+      return storage[to].stage;
     } else {
-      storage[from] = {
-        user: from,
+      storage[to] = {
+        user: to,
         stage: 0,
       };
     }
 
-    return storage[from].stage;
+    return storage[to].stage;
   }
 }

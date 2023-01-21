@@ -1,6 +1,7 @@
 import { create, Whatsapp, Message } from 'venom-bot';
 import { stages } from './stages';
 import { StageService } from './services/stage.service';
+import { downloadingImage } from './stages/DownloadingImage';
 
 const { getStage } = new StageService();
 var messageResponse: any;
@@ -11,12 +12,12 @@ create('suport-test')
 
 function start(client: Whatsapp): void {
   client.onMessage((message: Message) => {
-    const from = message.from;
-    const stage = getStage({ from });
+    const to = message.from;
+    var stage = getStage({ to });
 
     if (stage === 2) {
       messageResponse = stages[stage].stage.execute({
-        from,
+        to,
         client,
         message,
       });
@@ -27,11 +28,6 @@ function start(client: Whatsapp): void {
       return;
     }
 
-    console.log(
-      '🚀 ~ file: app.ts:29 ~ client.onMessage ~ messageResponse',
-      messageResponse
-    );
-
-    stages[stage].stage.execute({ from, client, message, messageResponse });
+    stages[stage].stage.execute({ to, client, message, messageResponse });
   });
 }
