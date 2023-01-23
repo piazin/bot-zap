@@ -19,6 +19,7 @@ class TalkOrNewCall {
           'Faça uma breve descrição do problema que está enfretando...'
         );
         storage[to].stage = 2;
+        break;
       default:
         invalidOption.execute({ to, client });
     }

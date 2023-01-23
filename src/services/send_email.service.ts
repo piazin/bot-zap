@@ -8,10 +8,6 @@ interface ISendEmail {
 
 class SendEmailService {
   async execute({ to, content, attachment }: ISendEmail) {
-    console.log(
-      '🚀 ~ file: send_email.service.ts:11 ~ SendEmailService ~ execute ~ attachment',
-      attachment
-    );
     try {
       let transporter = nodemailer.createTransport({
         service: 'gmail',
