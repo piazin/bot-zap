@@ -1,59 +1,3 @@
-import nodemailer from 'nodemailer';
-
-interface ISendEmail {
-  to: string;
-  user_name: string;
-  content: string;
-  attachment?: string;
-}
-
-class SendEmailService {
-  async execute({ to, user_name, content, attachment }: ISendEmail) {
-    try {
-      let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'suporte2@slpart.com.br',
-          pass: 'ieuurejtuiostalk',
-        },
-      });
-
-      let thereIsAttachment: string;
-      if (attachment) {
-        thereIsAttachment = attachment.split('/')[1];
-      }
-
-      const configMail = {
-        from: {
-          name: 'Suport Bot',
-          address: 'suporte2@slpart.com.br',
-        },
-        to: to,
-        subject: 'Novo chamado',
-        html: email_template(content, user_name, thereIsAttachment),
-        attachments: attachment
-          ? [
-              {
-                filename: thereIsAttachment,
-                path: attachment,
-                cid: thereIsAttachment,
-              },
-            ]
-          : null,
-      };
-
-      await transporter.sendMail(configMail);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-}
-
-var email_template = (
-  content: string,
-  user_name: string,
-  thereIsAttachment: string
-) => `
 <!DOCTYPE html>
 
 <html
@@ -781,7 +725,7 @@ var email_template = (
                                         >
                                         ${
                                           thereIsAttachment
-                                            ? `<img src="cid:${thereIsAttachment}" width="100%"
+                                            ? `<img src="cid:${thereIsAttachment}" width="30%"
                                         height="30%">`
                                             : ''
                                         }
@@ -1021,7 +965,3 @@ var email_template = (
     <!-- End -->
   </body>
 </html>
-
-`;
-
-export const sendEmailService = new SendEmailService();

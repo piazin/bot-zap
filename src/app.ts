@@ -16,7 +16,7 @@ function start(client: Whatsapp): void {
     const to = message.from;
     var stage = getStage({ to });
 
-    if (stage === 2 || stage === 5) {
+    if (stage === 2) {
       messageResponse = stages[stage].stage.execute({
         to,
         client,

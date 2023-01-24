@@ -15,6 +15,7 @@ class OpenNewTicket {
 
     await sendEmailService.execute({
       to: storage[to].userEmail,
+      user_name: message.sender.pushname,
       content: messageResponse,
       attachment: storage[to].pathSuportImg ? storage[to].pathSuportImg : null,
     });

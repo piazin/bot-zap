@@ -18,6 +18,7 @@ class RequestUserEmail {
 
     client.sendText(to, 'Qual seu email?');
     storage[to].stage = 6;
+    return message.body;
   }
 }
 
