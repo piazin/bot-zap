@@ -52,6 +52,7 @@ class SendMessageToAttendant {
 
     client.sendText(to, 'Tudo certo! Em breve o atendente entrara em contato');
     storage[to].stage = 0;
+    storage[to].pathSuportImg = null;
   }
 }
 

@@ -27,6 +27,7 @@ class OpenNewTicket {
 
     storage[to].stage = 0;
     storage[to].isTicket = false;
+    storage[to].pathSuportImg = null;
   }
 }
 

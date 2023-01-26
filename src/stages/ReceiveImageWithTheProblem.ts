@@ -5,7 +5,7 @@ class ReceiveImageWithTheProblem {
   execute({ to, client, message }: IStageParameters): void | string {
     client.sendText(
       to,
-      'Deseja enviar alguma imagem do problema? Se sim, favor encaminhar apenas uma imagem, caso não, digite não.'
+      'Deseja enviar alguma imagem do problema? Se sim, favor encaminhar apenas uma imagem, caso contrario, digite não.'
     );
     if (storage[to].isTicket) {
       storage[to].stage = 5;

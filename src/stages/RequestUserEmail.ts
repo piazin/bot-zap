@@ -1,6 +1,7 @@
 import { storage } from '../storage';
 import { downloadingImg } from '../services/download_img.service';
 import { IStageParameters } from './stage.dto';
+import { invalidOption } from './invalidOption';
 
 class RequestUserEmail {
   async execute({
@@ -8,6 +9,13 @@ class RequestUserEmail {
     client,
     message,
   }: IStageParameters): Promise<void | string> {
+    var mimetypeaccepted = ['image/jpeg', undefined];
+
+    if (!mimetypeaccepted.includes(message.mimetype)) {
+      invalidOption.execute({ to, client });
+      return;
+    }
+
     if (message.isMedia || message.isMMS) {
       storage[to].pathSuportImg = await downloadingImg.execute(
         client,

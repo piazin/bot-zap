@@ -5,7 +5,7 @@ import { StageService } from './services/stage.service';
 const { getStage } = new StageService();
 var messageResponse: any;
 
-create('suport-test')
+create('suport-t.i-sl')
   .then((client) => start(client))
   .catch((err) => console.error('🚀 ~ file: app.ts:6 ~ err', err));
 

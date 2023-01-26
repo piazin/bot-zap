@@ -1,59 +1,50 @@
-import nodemailer from 'nodemailer';
-
-interface ISendEmail {
-  to: string;
-  user_name: string;
-  content: string;
-  attachment?: string;
-}
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendEmailService = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
 class SendEmailService {
-  async execute({ to, user_name, content, attachment }: ISendEmail) {
-    try {
-      let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'suporte2@slpart.com.br',
-          pass: 'ieuurejtuiostalk',
-        },
-      });
-
-      let thereIsAttachment: string;
-      if (attachment) {
-        thereIsAttachment = attachment.split('/')[1];
-      }
-
-      const configMail = {
-        from: {
-          name: 'Suport Bot',
-          address: 'suporte2@slpart.com.br',
-        },
-        to: to,
-        subject: 'Novo chamado',
-        html: email_template(content, user_name, thereIsAttachment),
-        attachments: attachment
-          ? [
-              {
-                filename: thereIsAttachment,
-                path: attachment,
-                cid: thereIsAttachment,
-              },
-            ]
-          : null,
-      };
-
-      await transporter.sendMail(configMail);
-    } catch (error) {
-      console.error(error);
+    async execute({ to, user_name, content, attachment }) {
+        try {
+            let transporter = nodemailer_1.default.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'suporte2@slpart.com.br',
+                    pass: 'ieuurejtuiostalk',
+                },
+            });
+            let thereIsAttachment;
+            if (attachment) {
+                thereIsAttachment = attachment.split('/')[1];
+            }
+            const configMail = {
+                from: {
+                    name: 'Suport Bot',
+                    address: 'suporte2@slpart.com.br',
+                },
+                to: to,
+                subject: 'Novo chamado',
+                html: email_template(content, user_name, thereIsAttachment),
+                attachments: attachment
+                    ? [
+                        {
+                            filename: thereIsAttachment,
+                            path: attachment,
+                            cid: thereIsAttachment,
+                        },
+                    ]
+                    : null,
+            };
+            await transporter.sendMail(configMail);
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
-  }
 }
-
-var email_template = (
-  content: string,
-  user_name: string,
-  thereIsAttachment: string
-) => `
+var email_template = (content, user_name, thereIsAttachment) => `
 <!DOCTYPE html>
 
 <html
@@ -779,12 +770,10 @@ var email_template = (
                                             line-height: 1px;     
                                           "
                                         >
-                                        ${
-                                          thereIsAttachment
-                                            ? `<img src="cid:${thereIsAttachment}" width="100%"
+                                        ${thereIsAttachment
+    ? `<img src="cid:${thereIsAttachment}" width="100%"
                                         height="30%">`
-                                            : ''
-                                        }
+    : ''}
                                         </td>
                                       </tr>
                                     </table>
@@ -1023,5 +1012,4 @@ var email_template = (
 </html>
 
 `;
-
-export const sendEmailService = new SendEmailService();
+exports.sendEmailService = new SendEmailService();

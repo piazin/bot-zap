@@ -2,7 +2,7 @@ import { IStageParameters } from './stage.dto';
 
 class InvalidOption {
   execute({ to, client }: IStageParameters) {
-    client.sendText(to, 'Por favor, selecione uma opção valida.');
+    client.sendText(to, 'Por favor, envie uma opção valida.');
   }
 }
 
