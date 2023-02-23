@@ -13,6 +13,7 @@ function start(client: Whatsapp): void {
   client.onMessage((message: Message) => {
     if (message.isGroupMsg) return;
 
+    console.log('🚀 ~ file: app.ts:14 ~ client.onMessage ~ message:', message);
     const to = message.from;
     var stage = getStage({ to });
 

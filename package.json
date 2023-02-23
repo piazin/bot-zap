@@ -9,7 +9,7 @@
     "build": "tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "= <=>",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^18.11.18",
@@ -19,9 +19,12 @@
   "dependencies": {
     "@types/mime-types": "^2.1.1",
     "@types/nodemailer": "^6.4.7",
+    "dotenv": "^16.0.3",
     "mime-types": "^2.1.35",
     "nodemailer": "^6.9.0",
+    "openai": "^3.1.0",
     "ts-node": "^10.9.1",
     "venom-bot": "^4.3.7"
-  }
+  },
+  "repository": "git@github.com:piazin/bot-zap.git"
 }
