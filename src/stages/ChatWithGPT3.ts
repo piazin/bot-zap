@@ -1,4 +1,5 @@
 import { OpenIaService } from '../services/open_ia.service';
+import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
 
 class ChatWithGPT3 {
@@ -7,6 +8,9 @@ class ChatWithGPT3 {
     const response = await new OpenIaService().execute(message.body);
     await client.sendText(to, response);
     await client.stopTyping(to);
+    setTimeout(() => {
+      storage[to].stage = 0;
+    }, 43200000);
   }
 }
 
