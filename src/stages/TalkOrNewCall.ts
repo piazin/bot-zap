@@ -3,7 +3,7 @@ import { invalidOption } from './invalidOption';
 import { IStageParameters } from './stage.dto';
 
 class TalkOrNewCall {
-  execute({ to, client, message }: IStageParameters) {
+  async execute({ to, client, message }: IStageParameters) {
     switch (message.body.replace(' ', '')) {
       case '1':
         client.sendText(
@@ -21,7 +21,11 @@ class TalkOrNewCall {
         storage[to].stage = 2;
         break;
       case '3':
-        client.sendText(to, 'Qual sua pergunta?');
+        await client.sendText(
+          to,
+          'Para encerrar o chat digite #sair a qualquer momento.'
+        );
+        await client.sendText(to, 'Qual sua pergunta?');
         storage[to].stage = 7;
         break;
       default:

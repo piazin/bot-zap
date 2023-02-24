@@ -14,7 +14,7 @@ class SendEmailService {
         service: 'gmail',
         auth: {
           user: 'suporte2@slpart.com.br',
-          pass: 'ieuurejtuiostalk',
+          pass: process.env.EMAIL_KEY,
         },
       });
 
@@ -28,7 +28,7 @@ class SendEmailService {
           name: 'Suport Bot',
           address: 'suporte2@slpart.com.br',
         },
-        to: to,
+        to: process.env.NODE_ENV == 'production' ? 'ti@slpart.com.br' : to,
         subject: 'Novo chamado',
         html: email_template(content, user_name, thereIsAttachment),
         attachments: attachment

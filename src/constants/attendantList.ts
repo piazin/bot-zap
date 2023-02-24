@@ -4,7 +4,7 @@ export const attendantList = [
     rows: [
       {
         title: 'Andrey',
-        description: 'Suporte de infraestrutura',
+        description: 'Suporte de Infraestrutura',
       },
       {
         title: 'Sergio',
@@ -12,7 +12,11 @@ export const attendantList = [
       },
       {
         title: 'Lucas',
-        description: 'Suporte de Sistemas (SAP/Frontiline)',
+        description: 'Suporte de Infraestrutura',
+      },
+      {
+        title: 'Hernando',
+        description: 'Suporte de Sistemas (SAP/Frontline)',
       },
     ],
   },
@@ -29,6 +33,10 @@ export const attendantsPhoneNumber = [
   },
   {
     name: 'Lucas',
-    number: '554398049434@c.us',
+    number: '554391208707@c.us',
+  },
+  {
+    name: 'Hernando',
+    number: '554399578877@c.us',
   },
 ];

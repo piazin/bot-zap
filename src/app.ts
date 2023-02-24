@@ -1,6 +1,9 @@
 import { create, Whatsapp, Message } from 'venom-bot';
 import { stages } from './stages';
 import { StageService } from './services/stage.service';
+import { config } from 'dotenv';
+
+config();
 
 const { getStage } = new StageService();
 var messageResponse: any;

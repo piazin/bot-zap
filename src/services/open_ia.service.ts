@@ -1,7 +1,4 @@
 import { Configuration, OpenAIApi } from 'openai';
-import { config } from 'dotenv';
-
-config();
 
 export class OpenIaService {
   constructor(
@@ -19,7 +16,10 @@ export class OpenIaService {
       temperature: 0.7,
       max_tokens: 1000,
     });
-    console.log(completation.data);
+    console.log(
+      '🚀 ~ file: open_ia.service.ts:19 ~ OpenIaService ~ execute ~ ',
+      completation.data
+    );
 
     return completation.data.choices[0].text;
   }
