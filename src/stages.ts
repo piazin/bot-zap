@@ -6,6 +6,7 @@ import {
   sendMessageToAttendant,
   requestUserEmail,
   openNewTicket,
+  chatWithGPT3,
 } from './stages/_index';
 
 export const stages = [
@@ -36,5 +37,9 @@ export const stages = [
   {
     description: 'Open New Ticket',
     stage: openNewTicket,
+  },
+  {
+    description: 'Chat with GPT3',
+    stage: chatWithGPT3,
   },
 ];

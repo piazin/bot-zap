@@ -20,6 +20,10 @@ class TalkOrNewCall {
         );
         storage[to].stage = 2;
         break;
+      case '3':
+        client.sendText(to, 'Qual sua pergunta?');
+        storage[to].stage = 7;
+        break;
       default:
         invalidOption.execute({ to, client });
     }

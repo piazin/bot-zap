@@ -3,24 +3,24 @@ import { config } from 'dotenv';
 
 config();
 
-class OpenIaService {
+export class OpenIaService {
   constructor(
     private readonly configuration = new Configuration({
-      apiKey: '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',
+      organization: 'org-S3JUdsSdANNUe1W1by6q6HYz',
+      apiKey: process.env.OPENAI_API_KEY,
     }),
     private readonly openai = new OpenAIApi(configuration)
   ) {}
 
-  async execute() {
+  async execute(message: string) {
     const completation = await this.openai.createCompletion({
-      model: 'text-davinci-002',
-      prompt: 'como criar uma pagina web?',
-      temperature: 0.9,
-      max_tokens: 250,
+      model: 'text-davinci-003',
+      prompt: message,
+      temperature: 0.7,
+      max_tokens: 1000,
     });
+    console.log(completation.data);
 
-    console.log(completation.data.choices[0].text);
+    return completation.data.choices[0].text;
   }
 }
-
-new OpenIaService().execute();
