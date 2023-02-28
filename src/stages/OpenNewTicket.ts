@@ -1,6 +1,7 @@
 import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
 import { sendEmailService } from '../services/send_email.service';
+import { OpenIaService } from '../services/open_ia.service';
 
 class OpenNewTicket {
   async execute({
@@ -10,11 +11,30 @@ class OpenNewTicket {
     messageResponse,
   }: IStageParameters): Promise<void | string> {
     storage[to].userEmail = message.body;
+    var subject: string = '';
 
     client.sendText(to, 'Estamos abrindo seu chamado... Aguarde um momento.');
 
+    const requestOrIncident = await new OpenIaService().execute(
+      `isto é uma requisição ou incidente? \n ${messageResponse}`
+    );
+
+    if (requestOrIncident) {
+      const matchLetter: RegExpMatchArray | null = requestOrIncident?.match(
+        /\b(incidente|requisição)\b/g
+      );
+
+      if (matchLetter) {
+        subject =
+          (matchLetter[0] as string) === 'requisição'
+            ? 'requisicao'
+            : 'incidente';
+      }
+    }
+
     await sendEmailService.execute({
       to: storage[to].userEmail,
+      subject: subject || '',
       user_name: message.sender.pushname,
       content: messageResponse,
       attachment: storage[to].pathSuportImg ? storage[to].pathSuportImg : null,

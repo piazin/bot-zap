@@ -31,4 +31,8 @@ exports.stages = [
         description: 'Open New Ticket',
         stage: _index_1.openNewTicket,
     },
+    {
+        description: 'Chat with GPT3',
+        stage: _index_1.chatWithGPT3,
+    },
 ];

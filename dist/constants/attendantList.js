@@ -7,7 +7,7 @@ exports.attendantList = [
         rows: [
             {
                 title: 'Andrey',
-                description: 'Suporte de infraestrutura',
+                description: 'Suporte de Infraestrutura',
             },
             {
                 title: 'Sergio',
@@ -15,7 +15,11 @@ exports.attendantList = [
             },
             {
                 title: 'Lucas',
-                description: 'Suporte de Sistemas (SAP/Frontiline)',
+                description: 'Suporte de Infraestrutura',
+            },
+            {
+                title: 'Hernando',
+                description: 'Suporte de Sistemas (SAP/Frontline)',
             },
         ],
     },
@@ -31,6 +35,10 @@ exports.attendantsPhoneNumber = [
     },
     {
         name: 'Lucas',
-        number: '554398049434@c.us',
+        number: '554391208707@c.us',
+    },
+    {
+        name: 'Hernando',
+        number: '554399578877@c.us',
     },
 ];

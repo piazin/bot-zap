@@ -6,13 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmailService = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 class SendEmailService {
-    async execute({ to, user_name, content, attachment }) {
+    async execute({ to, user_name, content, attachment, subject }) {
         try {
             let transporter = nodemailer_1.default.createTransport({
                 service: 'gmail',
                 auth: {
                     user: 'suporte2@slpart.com.br',
-                    pass: 'ieuurejtuiostalk',
+                    pass: process.env.EMAIL_KEY,
                 },
             });
             let thereIsAttachment;
@@ -24,8 +24,8 @@ class SendEmailService {
                     name: 'Suport Bot',
                     address: 'suporte2@slpart.com.br',
                 },
-                to: to,
-                subject: 'Novo chamado',
+                to: process.env.NODE_ENV == 'production' ? 'ti@slpart.com.br' : to,
+                subject: `${subject}: Novo chamado recebido!`,
                 html: email_template(content, user_name, thereIsAttachment),
                 attachments: attachment
                     ? [

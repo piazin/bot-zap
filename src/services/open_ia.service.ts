@@ -9,18 +9,22 @@ export class OpenIaService {
     private readonly openai = new OpenAIApi(configuration)
   ) {}
 
-  async execute(message: string) {
-    const completation = await this.openai.createCompletion({
-      model: 'text-davinci-003',
-      prompt: message,
-      temperature: 0.7,
-      max_tokens: 1000,
-    });
-    console.log(
-      '🚀 ~ file: open_ia.service.ts:19 ~ OpenIaService ~ execute ~ ',
-      completation.data
-    );
+  async execute(message: string): Promise<string | null> {
+    try {
+      const completation = await this.openai.createCompletion({
+        model: 'text-davinci-003',
+        prompt: message,
+        temperature: 0.6,
+        max_tokens: 1000,
+      });
 
-    return completation.data.choices[0].text;
+      return completation.data.choices[0].text;
+    } catch (error) {
+      console.error(
+        '🚀 ~ file: open_ia.service.ts:26 ~ OpenIaService ~ execute ~ error:',
+        error
+      );
+      return null;
+    }
   }
 }

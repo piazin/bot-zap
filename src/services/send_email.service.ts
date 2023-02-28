@@ -5,10 +5,11 @@ interface ISendEmail {
   user_name: string;
   content: string;
   attachment?: string;
+  subject: string;
 }
 
 class SendEmailService {
-  async execute({ to, user_name, content, attachment }: ISendEmail) {
+  async execute({ to, user_name, content, attachment, subject }: ISendEmail) {
     try {
       let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -29,7 +30,7 @@ class SendEmailService {
           address: 'suporte2@slpart.com.br',
         },
         to: process.env.NODE_ENV == 'production' ? 'ti@slpart.com.br' : to,
-        subject: 'Novo chamado',
+        subject: `${subject}: Novo chamado recebido!`,
         html: email_template(content, user_name, thereIsAttachment),
         attachments: attachment
           ? [

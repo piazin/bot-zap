@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const venom_bot_1 = require("venom-bot");
 const stages_1 = require("./stages");
 const stage_service_1 = require("./services/stage.service");
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
 const { getStage } = new stage_service_1.StageService();
 var messageResponse;
 (0, venom_bot_1.create)('suport-t.i-sl')
