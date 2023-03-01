@@ -11,7 +11,7 @@ class ChatWithGPT3 {
             return;
         }
         client.startTyping(to);
-        const response = await new open_ia_service_1.OpenIaService().execute(message.body);
+        const response = await new open_ia_service_1.OpenIaService().createCompletion(message.body);
         await client.sendText(to, response);
         await client.stopTyping(to);
         setTimeout(() => {

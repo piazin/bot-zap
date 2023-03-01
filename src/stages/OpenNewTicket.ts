@@ -15,7 +15,7 @@ class OpenNewTicket {
 
     client.sendText(to, 'Estamos abrindo seu chamado... Aguarde um momento.');
 
-    const requestOrIncident = await new OpenIaService().execute(
+    const requestOrIncident = await new OpenIaService().createCompletion(
       `isto é uma requisição ou incidente? \n ${messageResponse}`
     );
 

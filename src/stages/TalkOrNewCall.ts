@@ -28,6 +28,16 @@ class TalkOrNewCall {
         await client.sendText(to, 'Qual sua pergunta?');
         storage[to].stage = 7;
         break;
+
+      case '4':
+        await client.sendText(
+          to,
+          'Para encerrar o chat digite #sair a qualquer momento.'
+        );
+        await client.sendText(to, 'Descreva com detalhes a imagem que deseja.');
+        storage[to].stage = 8;
+        break;
+
       default:
         invalidOption.execute({ to, client });
     }

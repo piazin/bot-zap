@@ -7,6 +7,7 @@ import {
   requestUserEmail,
   openNewTicket,
   chatWithGPT3,
+  generateImageByGPT3,
 } from './stages/_index';
 
 export const stages = [
@@ -41,5 +42,9 @@ export const stages = [
   {
     description: 'Chat with GPT3',
     stage: chatWithGPT3,
+  },
+  {
+    description: 'Generate image by IA',
+    stage: generateImageByGPT3,
   },
 ];

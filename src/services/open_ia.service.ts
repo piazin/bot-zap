@@ -9,7 +9,7 @@ export class OpenIaService {
     private readonly openai = new OpenAIApi(configuration)
   ) {}
 
-  async execute(message: string): Promise<string | null> {
+  async createCompletion(message: string): Promise<string | null> {
     try {
       const completation = await this.openai.createCompletion({
         model: 'text-davinci-003',
@@ -26,5 +26,15 @@ export class OpenIaService {
       );
       return null;
     }
+  }
+
+  async createImage(message: string): Promise<string | null> {
+    const response = await this.openai.createImage({
+      prompt: message,
+      size: '1024x1024',
+      n: 1,
+    });
+
+    return response.data.data[0].url;
   }
 }

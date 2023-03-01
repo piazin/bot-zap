@@ -35,4 +35,8 @@ exports.stages = [
         description: 'Chat with GPT3',
         stage: _index_1.chatWithGPT3,
     },
+    {
+        description: 'Generate image by IA',
+        stage: _index_1.generateImageByGPT3,
+    },
 ];

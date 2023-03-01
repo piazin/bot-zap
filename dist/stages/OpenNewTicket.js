@@ -9,7 +9,7 @@ class OpenNewTicket {
         storage_1.storage[to].userEmail = message.body;
         var subject = '';
         client.sendText(to, 'Estamos abrindo seu chamado... Aguarde um momento.');
-        const requestOrIncident = await new open_ia_service_1.OpenIaService().execute(`isto é uma requisição ou incidente? \n ${messageResponse}`);
+        const requestOrIncident = await new open_ia_service_1.OpenIaService().createCompletion(`isto é uma requisição ou incidente? \n ${messageResponse}`);
         if (requestOrIncident) {
             const matchLetter = requestOrIncident?.match(/\b(incidente|requisição)\b/g);
             if (matchLetter) {

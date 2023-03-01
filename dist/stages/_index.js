@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.chatWithGPT3 = exports.openNewTicket = exports.requestUserEmail = exports.sendMessageToAttendant = exports.receiveImageWithTheProblem = exports.sendAttendantList = exports.talkOrNewCall = exports.welcome = void 0;
+exports.generateImageByGPT3 = exports.chatWithGPT3 = exports.openNewTicket = exports.requestUserEmail = exports.sendMessageToAttendant = exports.receiveImageWithTheProblem = exports.sendAttendantList = exports.talkOrNewCall = exports.welcome = void 0;
 const Welcome_1 = require("./Welcome");
 Object.defineProperty(exports, "welcome", { enumerable: true, get: function () { return Welcome_1.welcome; } });
 const TalkOrNewCall_1 = require("./TalkOrNewCall");
@@ -17,3 +17,5 @@ const OpenNewTicket_1 = require("./OpenNewTicket");
 Object.defineProperty(exports, "openNewTicket", { enumerable: true, get: function () { return OpenNewTicket_1.openNewTicket; } });
 const ChatWithGPT3_1 = require("./ChatWithGPT3");
 Object.defineProperty(exports, "chatWithGPT3", { enumerable: true, get: function () { return ChatWithGPT3_1.chatWithGPT3; } });
+const GenerateImageByGPT3_1 = require("./GenerateImageByGPT3");
+Object.defineProperty(exports, "generateImageByGPT3", { enumerable: true, get: function () { return GenerateImageByGPT3_1.generateImageByGPT3; } });

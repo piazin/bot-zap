@@ -10,7 +10,7 @@ class OpenIaService {
         this.configuration = configuration;
         this.openai = openai;
     }
-    async execute(message) {
+    async createCompletion(message) {
         try {
             const completation = await this.openai.createCompletion({
                 model: 'text-davinci-003',
@@ -24,6 +24,14 @@ class OpenIaService {
             console.error('🚀 ~ file: open_ia.service.ts:26 ~ OpenIaService ~ execute ~ error:', error);
             return null;
         }
+    }
+    async createImage(message) {
+        const response = await this.openai.createImage({
+            prompt: message,
+            size: '1024x1024',
+            n: 1,
+        });
+        return response.data.data[0].url;
     }
 }
 exports.OpenIaService = OpenIaService;
