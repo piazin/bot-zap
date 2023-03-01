@@ -19,7 +19,7 @@ class ChatWithGPT3 {
     await client.stopTyping(to);
     setTimeout(() => {
       storage[to].stage = 0;
-    }, 300000);
+    }, 600000);
   }
 }
 

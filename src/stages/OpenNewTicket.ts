@@ -33,12 +33,28 @@ class OpenNewTicket {
     }
 
     await sendEmailService.execute({
-      to: storage[to].userEmail,
+      to:
+        process.env.NODE_ENV == 'production'
+          ? 'ti@slpart.com.br'
+          : storage[to].userEmail,
+      cc: storage[to].userEmail,
       subject: subject || '',
       user_name: message.sender.pushname,
       content: messageResponse,
       attachment: storage[to].pathSuportImg ? storage[to].pathSuportImg : null,
     });
+
+    if (process.env.NODE_ENV === 'production') {
+      await sendEmailService.execute({
+        to: 'suporte@slpart.com.br',
+        subject: subject || '',
+        user_name: message.sender.pushname,
+        content: messageResponse,
+        attachment: storage[to].pathSuportImg
+          ? storage[to].pathSuportImg
+          : null,
+      });
+    }
 
     client.sendText(
       to,

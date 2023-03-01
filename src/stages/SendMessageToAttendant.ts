@@ -10,6 +10,8 @@ class SendMessageToAttendant {
     message,
     messageResponse,
   }: IStageParameters): Promise<void | string> {
+    if (!message?.listResponse) return invalidOption.execute({ to, client });
+
     const attendantRequest = message.listResponse.title;
 
     if (!message?.listResponse) {

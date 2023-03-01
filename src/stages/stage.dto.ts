@@ -4,6 +4,9 @@ interface IMessage extends Message {
   listResponse?: {
     title: string;
     description: string;
+    singleSelectReply?: {
+      selectedRowId?: string;
+    };
   };
 }
 

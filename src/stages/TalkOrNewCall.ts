@@ -4,7 +4,12 @@ import { IStageParameters } from './stage.dto';
 
 class TalkOrNewCall {
   async execute({ to, client, message }: IStageParameters) {
-    switch (message.body.replace(' ', '')) {
+    if (!message.listResponse) return invalidOption.execute({ to, client });
+
+    const selectedOption =
+      message.listResponse?.singleSelectReply?.selectedRowId;
+
+    switch (selectedOption) {
       case '1':
         client.sendText(
           to,

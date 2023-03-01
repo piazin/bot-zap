@@ -24,6 +24,10 @@ class GenerateImageByGPT3 {
       await client.sendImage(to, path.resolve(pathImage));
       deleteImage(pathImage);
       await client.stopTyping(to);
+
+      setTimeout(() => {
+        storage[to].stage = 0;
+      }, 600000);
     } catch (error) {
       console.error(
         '🚀 ~ file: GenerateImageByGPT3.ts:30 ~ GenerateImageByGPT3 ~ execute ~ error:',
