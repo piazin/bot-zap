@@ -2,6 +2,7 @@ import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
 import { sendEmailService } from '../services/send_email.service';
 import { OpenIaService } from '../services/open_ia.service';
+import { deleteImage } from '../utils/deleteImage';
 
 class OpenNewTicket {
   async execute({
@@ -60,6 +61,8 @@ class OpenNewTicket {
       to,
       'Chamado aberto com sucesso! Em breve você recebera atualizações do seu chamado, obrigado.'
     );
+
+    if (storage[to].pathSuportImg) deleteImage(storage[to].pathSuportImg);
 
     storage[to].stage = 0;
     storage[to].isTicket = false;
