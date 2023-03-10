@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmailService = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 class SendEmailService {
-    async execute({ to, user_name, content, attachment, subject }) {
+    async execute({ to, user_name, content, attachment, subject, cc, }) {
         try {
             let transporter = nodemailer_1.default.createTransport({
                 service: 'gmail',
@@ -24,7 +24,8 @@ class SendEmailService {
                     name: 'Suport Bot',
                     address: 'suporte2@slpart.com.br',
                 },
-                to: process.env.NODE_ENV == 'production' ? 'ti@slpart.com.br' : to,
+                to,
+                cc,
                 subject: `${subject}: Novo chamado recebido!`,
                 html: email_template(content, user_name, thereIsAttachment),
                 attachments: attachment

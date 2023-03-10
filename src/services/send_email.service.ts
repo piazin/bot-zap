@@ -5,7 +5,7 @@ interface ISendEmail {
   user_name: string;
   content: string;
   attachment?: string;
-  subject: string;
+  subject?: string;
   cc?: string;
 }
 
@@ -39,7 +39,11 @@ class SendEmailService {
         },
         to,
         cc,
-        subject: `${subject}: Novo chamado recebido!`,
+        subject: ` ${
+          subject
+            ? `${subject}: Novo chamado recebido!`
+            : 'Seu chamado foi recebido com sucesso'
+        } `,
         html: email_template(content, user_name, thereIsAttachment),
         attachments: attachment
           ? [

@@ -9,24 +9,32 @@ class RequestUserEmail {
     client,
     message,
   }: IStageParameters): Promise<void | string> {
-    var mimetypeaccepted = ['image/jpeg', undefined];
+    try {
+      var mimetypeaccepted = ['image/jpeg', undefined];
 
-    if (!mimetypeaccepted.includes(message.mimetype)) {
-      invalidOption.execute({ to, client });
-      return;
-    }
+      if (!mimetypeaccepted.includes(message.mimetype)) {
+        invalidOption.execute({ to, client });
+        return;
+      }
 
-    if (message.isMedia || message.isMMS) {
-      storage[to].pathSuportImg = await downloadingImg.execute(
-        client,
-        message,
-        to
+      if (message.isMedia || message.isMMS) {
+        storage[to].pathSuportImg = await downloadingImg.execute(
+          client,
+          message,
+          to
+        );
+      }
+
+      client.sendText(to, 'Qual seu email?');
+      storage[to].stage = 6;
+      return message.body;
+    } catch (error) {
+      console.error(
+        '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',
+        error
       );
+      return invalidOption.execute({ to, client });
     }
-
-    client.sendText(to, 'Qual seu email?');
-    storage[to].stage = 6;
-    return message.body;
   }
 }
 

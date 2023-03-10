@@ -1,6 +1,7 @@
 import { IStageParameters } from './stage.dto';
 import { storage } from '../storage';
 import { firstOptions } from '../constants/firstOptions';
+import { invalidOption } from './invalidOption';
 
 class Welcome {
   async execute({
@@ -8,23 +9,24 @@ class Welcome {
     client,
     message,
   }: IStageParameters): Promise<void | string> {
-    // client.sendText(
-    //   to,
-    //   `Olá ${message.sender.pushname}, \n\nEu sou o Cib 🤖, seu assistente virtual do T.I SL.\nEm que posso ajudar?\n\n1 - Abrir um novo chamado \n2 - Falar com um de nossos atendentes \n3 - Fazer uma pergunta ao ChatGPT? \n4 - Gerar uma imagem a partir de uma IA`
-    // );
-    await client.sendText(
-      to,
-      `Olá ${message.sender.pushname}, \n\nEu sou o Cib, seu assistente virtual do T.I SL.\n\nEm que posso ajudar? 🤖\n`
-    );
+    try {
+      await client.sendText(
+        to,
+        `Olá ${message.sender.pushname}, \nMe chamo Cib, sou o assistente virtual do T.I SL.\nComo posso te ajudar?`
+      );
 
-    await client.sendListMenu(
-      to,
-      'Por favor, selecione uma das opções.',
-      '',
-      'selecionar',
-      firstOptions
-    );
-    storage[to].stage = 1;
+      await client.sendListMenu(
+        to,
+        'Por favor, selecione uma das opções.',
+        '',
+        'selecionar',
+        firstOptions
+      );
+      storage[to].stage = 1;
+    } catch (error) {
+      console.error('🚀 ~ file: Welcome.ts:28 ~ Welcome ~ error:', error);
+      return invalidOption.execute({ to, client });
+    }
   }
 }
 
