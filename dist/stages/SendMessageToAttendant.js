@@ -1,33 +1,34 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendMessageToAttendant = void 0;
-const storage_1 = require("../storage");
-const attendantList_1 = require("../constants/attendantList");
+exports.SendMessageToAttendant = void 0;
 const invalidOption_1 = require("./invalidOption");
+const storage_service_1 = require("../services/storage.service");
+const attendantList_1 = require("../constants/attendantList");
 class SendMessageToAttendant {
-    async execute({ to, client, message, messageResponse, }) {
+    constructor(to) {
+        this.storageService = new storage_service_1.StorageService(to);
+    }
+    async execute({ to, client, message, }) {
         try {
             if (!message?.listResponse)
                 return invalidOption_1.invalidOption.execute({ to, client });
             const attendantRequest = message.listResponse.title;
-            if (!message?.listResponse) {
-                invalidOption_1.invalidOption.execute({ to, client });
-                return;
-            }
             let thisAttendantExist = attendantList_1.attendantsPhoneNumber.find((attendant) => attendant.name === attendantRequest);
             if (!thisAttendantExist) {
                 invalidOption_1.invalidOption.execute({ to, client });
                 return;
             }
-            client.sendText(to, `Estou enviando o seu problema para o atendente ${attendantRequest}.`);
-            client.sendText(thisAttendantExist.number, `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${message.notifyName} te enviou um novo chamado, com o seguinte problema: \n\n ${messageResponse}`);
-            if (storage_1.storage[to]?.pathSuportImg) {
-                await client.sendImage(thisAttendantExist.number, storage_1.storage[to].pathSuportImg, 'File suport');
-            }
-            client.sendContactVcard(thisAttendantExist.number, message.from, message.notifyName);
-            client.sendText(to, 'Tudo certo! Em breve o atendente entrara em contato');
-            storage_1.storage[to].stage = 0;
-            storage_1.storage[to].pathSuportImg = null;
+            var problemOrRequestMessage = this.storageService.getProblemOrRequestMessage();
+            var pathSuportImg = this.storageService.getPathSuportImg();
+            await Promise.all([
+                client.sendText(thisAttendantExist.number, `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${message.notifyName} te enviou um novo chamado, com o seguinte problema: \n\n ${problemOrRequestMessage}`),
+                pathSuportImg &&
+                    client.sendImage(thisAttendantExist.number, pathSuportImg, 'File suport'),
+                client.sendContactVcard(thisAttendantExist.number, message.from, message.notifyName),
+                client.sendText(to, 'Tudo certo! Em breve o atendente entrará em contato.'),
+            ]);
+            this.storageService.setStage(0);
+            this.storageService.setPathSuportImg(null);
         }
         catch (error) {
             console.error('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:', error);
@@ -35,4 +36,4 @@ class SendMessageToAttendant {
         }
     }
 }
-exports.sendMessageToAttendant = new SendMessageToAttendant();
+exports.SendMessageToAttendant = SendMessageToAttendant;

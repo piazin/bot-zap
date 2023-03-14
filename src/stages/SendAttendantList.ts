@@ -25,7 +25,7 @@ export class SendAttendantList {
         );
       }
 
-      client.sendListMenu(
+      await client.sendListMenu(
         to,
         'Selecione um atendente',
         '',

@@ -1,18 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendAttendantList = void 0;
+exports.SendAttendantList = void 0;
 const storage_1 = require("../storage");
 const attendantList_1 = require("../constants/attendantList");
-const download_img_service_1 = require("../services/download_img.service");
+const downloadImg_service_1 = require("../services/downloadImg.service");
 const invalidOption_1 = require("./invalidOption");
+const storage_service_1 = require("../services/storage.service");
 class SendAttendantList {
+    constructor(to) {
+        this.storageService = new storage_service_1.StorageService(to);
+    }
     async execute({ to, client, message, }) {
         try {
             if (message.isMedia || message.isMMS) {
-                storage_1.storage[to].pathSuportImg = await download_img_service_1.downloadingImg.execute(client, message, to);
+                storage_1.storage[to].pathSuportImg = await downloadImg_service_1.downloadingImg.execute(client, message);
             }
-            client.sendListMenu(to, 'Selecione um atendente', '', 'Clique para selecionar', attendantList_1.attendantList);
-            storage_1.storage[to].stage = 4;
+            await client.sendListMenu(to, 'Selecione um atendente', '', 'Clique para selecionar', attendantList_1.attendantList);
+            this.storageService.setStage(4);
         }
         catch (error) {
             console.error('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:', error);
@@ -20,4 +24,4 @@ class SendAttendantList {
         }
     }
 }
-exports.sendAttendantList = new SendAttendantList();
+exports.SendAttendantList = SendAttendantList;

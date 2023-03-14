@@ -29,20 +29,19 @@ export class SendMessageToAttendant {
         return;
       }
 
-      var { getProblemOrRequestMessage, getPathSuportImg } =
-        this.storageService;
+      var problemOrRequestMessage =
+        this.storageService.getProblemOrRequestMessage();
+      var pathSuportImg = this.storageService.getPathSuportImg();
 
       await Promise.all([
         client.sendText(
           thisAttendantExist.number,
-          `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${
-            message.notifyName
-          } te enviou um novo chamado, com o seguinte problema: \n\n ${getProblemOrRequestMessage()}`
+          `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${message.notifyName} te enviou um novo chamado, com o seguinte problema: \n\n ${problemOrRequestMessage}`
         ),
-        getPathSuportImg() &&
+        pathSuportImg &&
           client.sendImage(
             thisAttendantExist.number,
-            getPathSuportImg(),
+            pathSuportImg,
             'File suport'
           ),
         client.sendContactVcard(

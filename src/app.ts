@@ -10,7 +10,7 @@ create('suport-t.i-sl')
   .catch((err) => console.error('🚀 ~ file: app.ts:6 ~ err', err));
 
 function start(client: Whatsapp): void {
-  client.onMessage(async (message: Message) => {
+  client.onMessage((message: Message) => {
     if (message.isGroupMsg) return;
 
     const to = message.from;
@@ -21,6 +21,6 @@ function start(client: Whatsapp): void {
     var currentStage = stages[stage].stage;
 
     //@ts-ignore
-    await new currentStage(to).execute({ to, client, message });
+    new currentStage(to).execute({ to, client, message });
   });
 }

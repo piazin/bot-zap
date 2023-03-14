@@ -54,7 +54,7 @@ export class TalkOrNewCall {
 
       await client.sendText(to, option.text);
       this.storageService.setStage(option.nextStage);
-      this.storageService.setTicket(true);
+      this.storageService.setTicket(option.isTicket);
     } catch (error) {
       console.error(
         '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',

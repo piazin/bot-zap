@@ -1,20 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.welcome = void 0;
-const storage_1 = require("../storage");
-const firstOptions_1 = require("../constants/firstOptions");
+exports.Welcome = void 0;
 const invalidOption_1 = require("./invalidOption");
+const firstOptions_1 = require("../constants/firstOptions");
+const storage_service_1 = require("../services/storage.service");
 class Welcome {
+    constructor(to) {
+        this.storageService = new storage_service_1.StorageService(to);
+    }
     async execute({ to, client, message, }) {
+        this.storageService = new storage_service_1.StorageService(to);
         try {
-            await client.sendText(to, `Olá ${message.sender.pushname}, \n\nEu sou o Cib, seu assistente virtual do T.I SL.\n\nEm que posso ajudar? 🤖\n`);
-            await client.sendListMenu(to, 'Por favor, selecione uma das opções.', '', 'selecionar', firstOptions_1.firstOptions);
-            storage_1.storage[to].stage = 1;
+            await client.sendText(to, `Olá ${message.sender.pushname}, \nEu sou o Cib, o assistente virtual do T.I SL.\nEstou aqui para ajudá-lo`);
+            await client.sendListMenu(to, 'Por favor, escolha uma das opções abaixo para que eu possa auxiliá-lo da melhor maneira possível', '', 'selecionar', firstOptions_1.firstOptions);
+            this.storageService.setStage(1);
         }
         catch (error) {
             console.error('🚀 ~ file: Welcome.ts:28 ~ Welcome ~ error:', error);
-            return invalidOption_1.invalidOption.execute({ to, client });
+            await invalidOption_1.invalidOption.execute({ to, client });
         }
     }
 }
-exports.welcome = new Welcome();
+exports.Welcome = Welcome;
