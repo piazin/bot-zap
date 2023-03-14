@@ -1,50 +1,50 @@
 import {
-  welcome,
-  talkOrNewCall,
-  sendAttendantList,
-  receiveImageWithTheProblem,
-  sendMessageToAttendant,
-  requestUserEmail,
-  openNewTicket,
-  chatWithGPT3,
-  generateImageByGPT3,
+  Welcome,
+  TalkOrNewCall,
+  SendAttendantList,
+  ReceiveImageWithTheProblem,
+  SendMessageToAttendant,
+  RequestUserEmail,
+  OpenNewTicket,
+  ChatWithGPT3,
+  GenerateImageByGPT3,
 } from './stages/_index';
 
 export const stages = [
   {
     description: 'Welcome to User',
-    stage: welcome,
+    stage: Welcome,
   },
   {
     description: 'Talk to an attendant',
-    stage: talkOrNewCall,
+    stage: TalkOrNewCall,
   },
   {
     description: 'Send Image or No',
-    stage: receiveImageWithTheProblem,
+    stage: ReceiveImageWithTheProblem,
   },
   {
     description: 'Select Attendant',
-    stage: sendAttendantList,
+    stage: SendAttendantList,
   },
   {
     description: 'Send Message to Attendant',
-    stage: sendMessageToAttendant,
+    stage: SendMessageToAttendant,
   },
   {
     description: 'Request User Email',
-    stage: requestUserEmail,
+    stage: RequestUserEmail,
   },
   {
     description: 'Open New Ticket',
-    stage: openNewTicket,
+    stage: OpenNewTicket,
   },
   {
     description: 'Chat with GPT3',
-    stage: chatWithGPT3,
+    stage: ChatWithGPT3,
   },
   {
     description: 'Generate image by IA',
-    stage: generateImageByGPT3,
+    stage: GenerateImageByGPT3,
   },
 ];

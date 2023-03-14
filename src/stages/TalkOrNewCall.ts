@@ -1,15 +1,23 @@
-import { storage } from '../storage';
 import { invalidOption } from './invalidOption';
 import { IStageParameters } from './stage.dto';
+import { StorageService } from '../services/storage.service';
 
-class TalkOrNewCall {
+export class TalkOrNewCall {
+  private storageService: StorageService;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
+
   async execute({ to, client, message }: IStageParameters) {
+    this.storageService = new StorageService(to);
+
     try {
       if (!message.listResponse) return invalidOption.execute({ to, client });
 
       const options = {
         '1': {
-          text: 'Muito bem para abrir um novo chamado, preciso que você me descreva o problema, duvida ou requisição que deseja fazer.',
+          text: 'Para abrir um novo chamado, por favor, descreva o problema, dúvida ou requisição que você deseja fazer.',
           isTicket: true,
           nextStage: 2,
         },
@@ -45,8 +53,8 @@ class TalkOrNewCall {
         await client.sendText(to, 'Para encerrar o chat digite #sair');
 
       await client.sendText(to, option.text);
-      storage[to].stage = option.nextStage;
-      storage[to].isTicket = option.isTicket;
+      this.storageService.setStage(option.nextStage);
+      this.storageService.setTicket(true);
     } catch (error) {
       console.error(
         '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',
@@ -56,5 +64,3 @@ class TalkOrNewCall {
     }
   }
 }
-
-export const talkOrNewCall = new TalkOrNewCall();

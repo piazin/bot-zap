@@ -1,11 +1,17 @@
 import path from 'path';
-import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
 import { OpenIaService } from '../services/openIa.service';
 import { downloadImage } from '../utils/downloadImage';
 import { deleteImage } from '../utils/deleteImage';
+import { StorageService } from '../services/storage.service';
 
-class GenerateImageByGPT3 {
+export class GenerateImageByGPT3 {
+  private storageService: StorageService;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
+
   async execute({ to, client, message }: IStageParameters): Promise<void> {
     try {
       if (message.body === '#sair') {
@@ -13,7 +19,7 @@ class GenerateImageByGPT3 {
           to,
           `Foi um prazer atende-lo(a) ${message.sender.pushname} 🤝, caso tenha mais alguma  dúvida pode sempre me procurar! Obrigado.`
         );
-        storage[to].stage = 0;
+        this.storageService.setStage(0);
         return;
       }
 
@@ -26,7 +32,7 @@ class GenerateImageByGPT3 {
       await client.stopTyping(to);
 
       setTimeout(() => {
-        storage[to].stage = 0;
+        this.storageService.setStage(0);
       }, 600000);
     } catch (error) {
       console.error(
@@ -37,5 +43,3 @@ class GenerateImageByGPT3 {
     }
   }
 }
-
-export const generateImageByGPT3 = new GenerateImageByGPT3();

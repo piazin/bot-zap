@@ -1,11 +1,17 @@
-import { storage } from '../storage';
-import { downloadingImg } from '../services/downloadImg.service';
 import { IStageParameters } from './stage.dto';
 import { invalidOption } from './invalidOption';
+import { StorageService } from '../services/storage.service';
+import { downloadingImg } from '../services/downloadImg.service';
 
 const ACCEPTED_MIME_TYPES = ['image/jpeg', undefined];
 
-class RequestUserEmail {
+export class RequestUserEmail {
+  private storageService: StorageService;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
+
   async execute({
     to,
     client,
@@ -18,20 +24,18 @@ class RequestUserEmail {
       }
 
       if (message.isMedia || message.isMMS) {
-        storage[to].pathSuportImg = await downloadingImg.execute(
-          client,
-          message
-        );
+        var path = await downloadingImg.execute(client, message);
+        this.storageService.setPathSuportImg(path);
       }
 
-      await client.sendText(to, 'Qual é o seu e-mail?');
-      storage[to].stage = 6;
-      return message.body;
+      await client.sendText(
+        to,
+        'Por favor, poderia me informar seu endereço de e-mail?'
+      );
+      this.storageService.setStage(6);
     } catch (error) {
       console.error(`Error in RequestUserEmail.execute: ${error}`);
       await invalidOption.execute({ to, client });
     }
   }
 }
-
-export const requestUserEmail = new RequestUserEmail();

@@ -1,33 +1,40 @@
 import { IStageParameters } from './stage.dto';
-import { storage } from '../storage';
-import { firstOptions } from '../constants/firstOptions';
 import { invalidOption } from './invalidOption';
+import { firstOptions } from '../constants/firstOptions';
+import { StorageService } from '../services/storage.service';
 
-class Welcome {
+export class Welcome {
+  private storageService: StorageService;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
+
   async execute({
     to,
     client,
     message,
   }: IStageParameters): Promise<void | string> {
+    this.storageService = new StorageService(to);
+
     try {
       await client.sendText(
         to,
-        `Olá ${message.sender.pushname}, \nMe chamo Cib, sou o assistente virtual do T.I SL.\nComo posso te ajudar?`
+        `Olá ${message.sender.pushname}, \nEu sou o Cib, o assistente virtual do T.I SL.\nEstou aqui para ajudá-lo`
       );
 
       await client.sendListMenu(
         to,
-        'Por favor, selecione uma das opções.',
+        'Por favor, escolha uma das opções abaixo para que eu possa auxiliá-lo da melhor maneira possível',
         '',
         'selecionar',
         firstOptions
       );
-      storage[to].stage = 1;
+
+      this.storageService.setStage(1);
     } catch (error) {
       console.error('🚀 ~ file: Welcome.ts:28 ~ Welcome ~ error:', error);
       await invalidOption.execute({ to, client });
     }
   }
 }
-
-export const welcome = new Welcome();

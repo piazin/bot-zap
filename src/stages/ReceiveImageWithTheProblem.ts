@@ -1,18 +1,25 @@
-import { storage } from '../storage';
+import { StorageService } from '../services/storage.service';
 import { invalidOption } from './invalidOption';
 import { IStageParameters } from './stage.dto';
 
-class ReceiveImageWithTheProblem {
+export class ReceiveImageWithTheProblem {
+  private storageService: StorageService;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
+
   async execute({ to, client, message }: IStageParameters): Promise<void> {
     try {
       client.sendText(
         to,
-        'Deseja enviar alguma imagem do problema? Se sim, favor encaminhar apenas uma imagem, caso contrario, digite não.'
+        'Você gostaria de enviar alguma imagem do problema? Se sim, por favor, envie apenas uma imagem. Caso contrário, digite "não".'
       );
 
-      storage[to].problemOrRequestMessage = message.body;
+      this.storageService.setProblemOrRequestMessage(message.body);
 
-      storage[to].stage = storage[to].isTicket ? 5 : 3;
+      var stage = this.storageService.getTicket() ? 5 : 3;
+      this.storageService.setStage(stage);
     } catch (error) {
       console.error(
         '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',
@@ -22,5 +29,3 @@ class ReceiveImageWithTheProblem {
     }
   }
 }
-
-export const receiveImageWithTheProblem = new ReceiveImageWithTheProblem();

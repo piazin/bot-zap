@@ -1,10 +1,10 @@
-import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
-import { sendEmailService } from '../services/sendEmail.service';
-import { OpenIaService } from '../services/openIa.service';
 import { deleteImage } from '../utils/deleteImage';
+import { OpenIaService } from '../services/openIa.service';
+import { StorageService } from '../services/storage.service';
+import { sendEmailService } from '../services/sendEmail.service';
 
-class OpenNewTicket {
+export class OpenNewTicket {
   private emailTo: string;
   private content: string;
   private subject: string;
@@ -12,26 +12,36 @@ class OpenNewTicket {
   private userEmail: string;
   private attachments;
 
+  private storageService: StorageService;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
+
   async execute({
     to,
     client,
     message,
   }: IStageParameters): Promise<void | string> {
     try {
-      storage[to].userEmail = message.body;
+      this.storageService.setUserEmail(message.body);
+
       this.userEmail = message.body;
-      this.content = storage[to].problemOrRequestMessage;
+      this.content = this.storageService.getProblemOrRequestMessage();
       this.userName = message.sender.pushname;
       this.emailTo =
         process.env.NODE_ENV === 'production'
           ? 'ti@slpart.com.br'
-          : storage[to].userEmail;
+          : this.userEmail;
 
-      this.attachments = storage[to].pathSuportImg
-        ? storage[to].pathSuportImg
+      this.attachments = this.storageService.getPathSuportImg()
+        ? this.storageService.getPathSuportImg()
         : null;
 
-      client.sendText(to, 'Estamos abrindo seu chamado... Aguarde um momento.');
+      client.sendText(
+        to,
+        'Estamos abrindo seu chamado, por favor, aguarde um momento enquanto processamos as informações.'
+      );
 
       const requestOrIncident = await new OpenIaService().createCompletion(
         `isto é uma requisição ou incidente? \n ${this.content}, \n Responda apenas com requisição ou incidente`
@@ -52,14 +62,15 @@ class OpenNewTicket {
 
       client.sendText(
         to,
-        'Chamado aberto com sucesso! Em breve você recebera atualizações do seu chamado, obrigado.'
+        'Seu chamado foi aberto com sucesso! Em breve você receberá atualizações sobre o status do chamado. Obrigado!'
       );
 
-      if (storage[to].pathSuportImg) deleteImage(storage[to].pathSuportImg);
+      if (this.storageService.getPathSuportImg())
+        deleteImage(this.storageService.getPathSuportImg());
 
-      storage[to].stage = 0;
-      storage[to].isTicket = false;
-      storage[to].pathSuportImg = null;
+      this.storageService.setStage(0);
+      this.storageService.setTicket(false);
+      this.storageService.setPathSuportImg(null);
     } catch (error) {
       console.error('Error opening new ticket:', error);
       await client.sendText(
@@ -90,5 +101,3 @@ class OpenNewTicket {
     });
   }
 }
-
-export const openNewTicket = new OpenNewTicket();

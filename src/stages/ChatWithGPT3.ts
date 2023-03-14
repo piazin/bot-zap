@@ -1,17 +1,22 @@
 import { OpenIaService } from '../services/openIa.service';
-import { storage } from '../storage';
+import { StorageService } from '../services/storage.service';
 import { invalidOption } from './invalidOption';
 import { IStageParameters } from './stage.dto';
 
-class ChatWithGPT3 {
+export class ChatWithGPT3 {
+  private readonly storageService: StorageService;
   private static readonly MAX_IDLE_TIME_MS = 600000;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
 
   async execute({ to, client, message }: IStageParameters) {
     try {
       if (message.body === '#sair') {
         const farewellMessage = `Foi um prazer atendê-lo(a) ${message.sender.pushname} 🤝, caso tenha mais alguma dúvida pode sempre me procurar! Obrigado.`;
         await client.sendText(to, farewellMessage);
-        storage[to].stage = 0;
+        this.storageService.setStage(0);
         return;
       }
 
@@ -21,7 +26,7 @@ class ChatWithGPT3 {
       await client.stopTyping(to);
 
       const idleTimeout = setTimeout(() => {
-        storage[to].stage = 0;
+        this.storageService.setStage(0);
       }, ChatWithGPT3.MAX_IDLE_TIME_MS);
 
       idleTimeout.refresh();
@@ -31,5 +36,3 @@ class ChatWithGPT3 {
     }
   }
 }
-
-export const chatWithGPT3 = new ChatWithGPT3();

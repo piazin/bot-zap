@@ -1,6 +1,6 @@
-interface IStorage {
+export interface IStorage {
   stage: number;
-  userEmail: string;
+  userEmail?: string;
   pathSuportImg?: string;
   problemOrRequestMessage?: string;
   isTicket?: boolean;

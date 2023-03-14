@@ -1,9 +1,15 @@
-import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
-import { attendantsPhoneNumber } from '../constants/attendantList';
 import { invalidOption } from './invalidOption';
+import { StorageService } from '../services/storage.service';
+import { attendantsPhoneNumber } from '../constants/attendantList';
 
-class SendMessageToAttendant {
+export class SendMessageToAttendant {
+  private readonly storageService: StorageService;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
+
   async execute({
     to,
     client,
@@ -23,15 +29,20 @@ class SendMessageToAttendant {
         return;
       }
 
+      var { getProblemOrRequestMessage, getPathSuportImg } =
+        this.storageService;
+
       await Promise.all([
         client.sendText(
           thisAttendantExist.number,
-          `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${message.notifyName} te enviou um novo chamado, com o seguinte problema: \n\n ${storage[to].problemOrRequestMessage}`
+          `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${
+            message.notifyName
+          } te enviou um novo chamado, com o seguinte problema: \n\n ${getProblemOrRequestMessage()}`
         ),
-        storage[to]?.pathSuportImg &&
+        getPathSuportImg() &&
           client.sendImage(
             thisAttendantExist.number,
-            storage[to].pathSuportImg,
+            getPathSuportImg(),
             'File suport'
           ),
         client.sendContactVcard(
@@ -45,8 +56,8 @@ class SendMessageToAttendant {
         ),
       ]);
 
-      storage[to].stage = 0;
-      storage[to].pathSuportImg = null;
+      this.storageService.setStage(0);
+      this.storageService.setPathSuportImg(null);
     } catch (error) {
       console.error(
         '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',
@@ -56,5 +67,3 @@ class SendMessageToAttendant {
     }
   }
 }
-
-export const sendMessageToAttendant = new SendMessageToAttendant();

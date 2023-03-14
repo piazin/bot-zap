@@ -3,8 +3,15 @@ import { IStageParameters } from './stage.dto';
 import { attendantList } from '../constants/attendantList';
 import { downloadingImg } from '../services/downloadImg.service';
 import { invalidOption } from './invalidOption';
+import { StorageService } from '../services/storage.service';
 
-class SendAttendantList {
+export class SendAttendantList {
+  private readonly storageService: StorageService;
+
+  constructor(to: string) {
+    this.storageService = new StorageService(to);
+  }
+
   async execute({
     to,
     client,
@@ -25,7 +32,8 @@ class SendAttendantList {
         'Clique para selecionar',
         attendantList
       );
-      storage[to].stage = 4;
+
+      this.storageService.setStage(4);
     } catch (error) {
       console.error(
         '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',
@@ -35,5 +43,3 @@ class SendAttendantList {
     }
   }
 }
-
-export const sendAttendantList = new SendAttendantList();
