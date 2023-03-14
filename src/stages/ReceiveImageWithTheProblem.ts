@@ -3,25 +3,22 @@ import { invalidOption } from './invalidOption';
 import { IStageParameters } from './stage.dto';
 
 class ReceiveImageWithTheProblem {
-  execute({ to, client, message }: IStageParameters): void | string {
+  async execute({ to, client, message }: IStageParameters): Promise<void> {
     try {
       client.sendText(
         to,
         'Deseja enviar alguma imagem do problema? Se sim, favor encaminhar apenas uma imagem, caso contrario, digite não.'
       );
-      if (storage[to].isTicket) {
-        storage[to].stage = 5;
-        return message.body;
-      }
 
-      storage[to].stage = 3;
-      return message.body;
+      storage[to].problemOrRequestMessage = message.body;
+
+      storage[to].stage = storage[to].isTicket ? 5 : 3;
     } catch (error) {
       console.error(
         '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',
         error
       );
-      return invalidOption.execute({ to, client });
+      await invalidOption.execute({ to, client });
     }
   }
 }

@@ -1,7 +1,7 @@
 import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
 import { attendantList } from '../constants/attendantList';
-import { downloadingImg } from '../services/download_img.service';
+import { downloadingImg } from '../services/downloadImg.service';
 import { invalidOption } from './invalidOption';
 
 class SendAttendantList {
@@ -14,8 +14,7 @@ class SendAttendantList {
       if (message.isMedia || message.isMMS) {
         storage[to].pathSuportImg = await downloadingImg.execute(
           client,
-          message,
-          to
+          message
         );
       }
 

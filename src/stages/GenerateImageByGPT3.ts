@@ -1,12 +1,12 @@
 import path from 'path';
 import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
-import { OpenIaService } from '../services/open_ia.service';
+import { OpenIaService } from '../services/openIa.service';
 import { downloadImage } from '../utils/downloadImage';
 import { deleteImage } from '../utils/deleteImage';
 
 class GenerateImageByGPT3 {
-  async execute({ to, client, message }: IStageParameters) {
+  async execute({ to, client, message }: IStageParameters): Promise<void> {
     try {
       if (message.body === '#sair') {
         client.sendText(

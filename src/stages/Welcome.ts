@@ -25,7 +25,7 @@ class Welcome {
       storage[to].stage = 1;
     } catch (error) {
       console.error('🚀 ~ file: Welcome.ts:28 ~ Welcome ~ error:', error);
-      return invalidOption.execute({ to, client });
+      await invalidOption.execute({ to, client });
     }
   }
 }

@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 
-export function deleteImage(pathImage: string): void {
-  fs.rmSync(path.resolve(pathImage));
+export async function deleteImage(pathImage: string): Promise<void> {
+  await fs.rm(path.resolve(pathImage));
 }

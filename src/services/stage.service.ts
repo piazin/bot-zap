@@ -1,18 +1,13 @@
 import { storage } from '../storage';
 
-type RequestStage = {
-  to: string;
-};
-
 export class StageService {
-  getStage({ to }: RequestStage): number {
-    if (storage[to]) {
-      return storage[to].stage;
-    } else {
+  getStage({ to }: { to: string }): number {
+    if (!storage[to]) {
       storage[to] = {
-        user: to,
+        userEmail: to,
         stage: 0,
       };
+      return;
     }
 
     return storage[to].stage;

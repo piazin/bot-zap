@@ -1,9 +1,8 @@
 import { storage } from '../storage';
 import { IStageParameters } from './stage.dto';
-import { sendEmailService } from '../services/send_email.service';
-import { OpenIaService } from '../services/open_ia.service';
+import { sendEmailService } from '../services/sendEmail.service';
+import { OpenIaService } from '../services/openIa.service';
 import { deleteImage } from '../utils/deleteImage';
-import { invalidOption } from './invalidOption';
 
 class OpenNewTicket {
   private emailTo: string;
@@ -17,12 +16,11 @@ class OpenNewTicket {
     to,
     client,
     message,
-    messageResponse,
   }: IStageParameters): Promise<void | string> {
     try {
       storage[to].userEmail = message.body;
       this.userEmail = message.body;
-      this.content = messageResponse;
+      this.content = storage[to].problemOrRequestMessage;
       this.userName = message.sender.pushname;
       this.emailTo =
         process.env.NODE_ENV === 'production'
@@ -36,10 +34,8 @@ class OpenNewTicket {
       client.sendText(to, 'Estamos abrindo seu chamado... Aguarde um momento.');
 
       const requestOrIncident = await new OpenIaService().createCompletion(
-        `isto é uma requisição ou incidente? \n ${messageResponse}, \n Responda apenas com requisição ou incidente`
+        `isto é uma requisição ou incidente? \n ${this.content}, \n Responda apenas com requisição ou incidente`
       );
-
-      console.log('Request or Incident:', requestOrIncident);
 
       const matchLetter: RegExpMatchArray | null = requestOrIncident
         ?.toLowerCase()
@@ -50,13 +46,9 @@ class OpenNewTicket {
         return;
       }
 
-      console.log('Matched letters:', matchLetter);
-
       this.subject = matchLetter[0] === 'requisição' ? 'requisicao' : '';
 
-      this.sendTicketEmail();
-
-      if (process.env.NODE_ENV === 'production') this.sendTicketEmail();
+      await this.sendEmailToSupport();
 
       client.sendText(
         to,
@@ -70,7 +62,10 @@ class OpenNewTicket {
       storage[to].pathSuportImg = null;
     } catch (error) {
       console.error('Error opening new ticket:', error);
-      return invalidOption.execute({ to, client });
+      await client.sendText(
+        to,
+        'Falha ao enviar o ticket, tente novamente mais tarde.'
+      );
     }
   }
 

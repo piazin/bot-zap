@@ -6,7 +6,6 @@ import { config } from 'dotenv';
 config();
 
 const { getStage } = new StageService();
-var messageResponse: any;
 
 create('suport-t.i-sl')
   .then((client) => start(client))
@@ -19,15 +18,6 @@ function start(client: Whatsapp): void {
     const to = message.from;
     var stage = getStage({ to });
 
-    if (stage === 2) {
-      messageResponse = stages[stage].stage.execute({
-        to,
-        client,
-        message,
-      });
-      return;
-    }
-
-    stages[stage].stage.execute({ to, client, message, messageResponse });
+    stages[stage].stage.execute({ to, client, message });
   });
 }

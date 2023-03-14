@@ -1,14 +1,10 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import mime from 'mime-types';
 import { Message, Whatsapp } from 'venom-bot';
 
 class DownloadingImg {
-  async execute(
-    client: Whatsapp,
-    message: Message,
-    to: string
-  ): Promise<string> {
+  async execute(client: Whatsapp, message: Message): Promise<string> {
     try {
       const folderUploads = path.resolve('uploads');
       const buffer = await client.decryptFile(message);
@@ -18,19 +14,12 @@ class DownloadingImg {
         message.mimetype
       )}`;
 
-      fs.writeFile(fileName, buffer, (err) => {
-        if (err) {
-          console.log(
-            '🚀 ~ file: downloadingImage.ts:13 ~ fs.writeFile ~ err',
-            err
-          );
-          throw new Error('Falha ao baixar arquivos');
-        }
-      });
+      await fs.writeFile(fileName, buffer);
 
       return fileName;
     } catch (error) {
       console.error(error);
+      throw new Error('Falha ao baixar arquivos');
     }
   }
 }

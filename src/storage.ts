@@ -2,8 +2,8 @@ interface IStorage {
   stage: number;
   userEmail: string;
   pathSuportImg?: string;
-  allStagesCompleted?: boolean;
+  problemOrRequestMessage?: string;
   isTicket?: boolean;
 }
 
-export var storage: IStorage = Object.create({});
+export var storage: Record<string, IStorage> = Object.create({});

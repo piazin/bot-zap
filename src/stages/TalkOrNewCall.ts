@@ -7,49 +7,46 @@ class TalkOrNewCall {
     try {
       if (!message.listResponse) return invalidOption.execute({ to, client });
 
+      const options = {
+        '1': {
+          text: 'Muito bem para abrir um novo chamado, preciso que você me descreva o problema, duvida ou requisição que deseja fazer.',
+          isTicket: true,
+          nextStage: 2,
+        },
+        '2': {
+          text: 'Faça uma breve descrição do problema que está enfretando...',
+          isTicket: false,
+          nextStage: 2,
+        },
+        '3': {
+          text: 'Qual sua pergunta?',
+          isTicket: false,
+          nextStage: 7,
+          toLeave: true,
+        },
+        '4': {
+          text: 'Descreva com detalhes a imagem que deseja.',
+          isTicket: false,
+          nextStage: 8,
+          toLeave: true,
+        },
+      };
+
       const selectedOption =
         message.listResponse?.singleSelectReply?.selectedRowId;
 
-      switch (selectedOption) {
-        case '1':
-          client.sendText(
-            to,
-            'Muito bem para abrir um novo chamado, preciso que você me descreva o problema, duvida ou requisição que deseja fazer.'
-          );
-          storage[to].stage = 2;
-          storage[to].isTicket = true;
-          break;
-        case '2':
-          client.sendText(
-            to,
-            'Faça uma breve descrição do problema que está enfretando...'
-          );
-          storage[to].stage = 2;
-          break;
-        case '3':
-          await client.sendText(
-            to,
-            'Para encerrar o chat digite #sair a qualquer momento.'
-          );
-          await client.sendText(to, 'Qual sua pergunta?');
-          storage[to].stage = 7;
-          break;
+      const option = options[selectedOption];
 
-        case '4':
-          await client.sendText(
-            to,
-            'Para encerrar o chat digite #sair a qualquer momento.'
-          );
-          await client.sendText(
-            to,
-            'Descreva com detalhes a imagem que deseja.'
-          );
-          storage[to].stage = 8;
-          break;
-
-        default:
-          invalidOption.execute({ to, client });
+      if (!option) {
+        return invalidOption.execute({ to, client });
       }
+
+      if (option.toLeave)
+        await client.sendText(to, 'Para encerrar o chat digite #sair');
+
+      await client.sendText(to, option.text);
+      storage[to].stage = option.nextStage;
+      storage[to].isTicket = option.isTicket;
     } catch (error) {
       console.error(
         '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',

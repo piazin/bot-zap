@@ -1,39 +1,35 @@
 import { storage } from '../storage';
-import { downloadingImg } from '../services/download_img.service';
+import { downloadingImg } from '../services/downloadImg.service';
 import { IStageParameters } from './stage.dto';
 import { invalidOption } from './invalidOption';
+
+const ACCEPTED_MIME_TYPES = ['image/jpeg', undefined];
 
 class RequestUserEmail {
   async execute({
     to,
     client,
     message,
-  }: IStageParameters): Promise<void | string> {
+  }: IStageParameters): Promise<string | void> {
     try {
-      var mimetypeaccepted = ['image/jpeg', undefined];
-
-      if (!mimetypeaccepted.includes(message.mimetype)) {
-        invalidOption.execute({ to, client });
+      if (!ACCEPTED_MIME_TYPES.includes(message.mimetype)) {
+        await invalidOption.execute({ to, client });
         return;
       }
 
       if (message.isMedia || message.isMMS) {
         storage[to].pathSuportImg = await downloadingImg.execute(
           client,
-          message,
-          to
+          message
         );
       }
 
-      client.sendText(to, 'Qual seu email?');
+      await client.sendText(to, 'Qual é o seu e-mail?');
       storage[to].stage = 6;
       return message.body;
     } catch (error) {
-      console.error(
-        '🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:',
-        error
-      );
-      return invalidOption.execute({ to, client });
+      console.error(`Error in RequestUserEmail.execute: ${error}`);
+      await invalidOption.execute({ to, client });
     }
   }
 }
