@@ -35,23 +35,18 @@
     </style>
   </head>
   <body>
-    <h1>Confirmação de Ticket de TI - [Número do Ticket]</h1>
+    <h1>Confirmação de Ticket de TI - {ticketNumber}</h1>
 
     <div class="confirmation-message">
-      <p>Olá [Nome do solicitante],</p>
+      <p>Olá {userName},</p>
       <p>
         Este é um email de confirmação para informá-lo de que seu ticket de TI
         foi recebido e está sendo processado. Abaixo estão os detalhes do seu
         ticket:
       </p>
-      <p><strong>Número do Ticket:</strong> [Número do Ticket]</p>
-      <p><strong>Data/hora do chamado:</strong> [Data/hora do chamado]</p>
-      <p>
-        <strong>Descrição do problema:</strong> [Descrição detalhada do
-        problema]
-      </p>
-      <p><strong>Prioridade:</strong> [Prioridade do Ticket]</p>
-      <p><strong>Status:</strong> [Status do Ticket]</p>
+      <p><strong>Número do Ticket:</strong> {ticketNumber}</p>
+      <p><strong>Data/hora do chamado:</strong> {dateAndHours}</p>
+      <p><strong>Descrição do problema:</strong> {content}</p>
       <p>
         Um membro da nossa equipe de TI entrará em contato com você em breve
         para fornecer uma atualização sobre o status do seu ticket e possíveis
