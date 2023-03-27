@@ -3,16 +3,15 @@ import path from 'path';
 import mime from 'mime-types';
 import { Message, Whatsapp } from '@wppconnect-team/wppconnect';
 
-class DownloadingImg {
+class DownloadFileService {
   async execute(client: Whatsapp, message: Message): Promise<string> {
     try {
       const folderUploads = path.resolve('uploads');
       const buffer = await client.decryptFile(message);
       const fileID = message.id.split('_')[2];
+      const mimetype = message.mimetype === 'audio/ogg; codecs=opus' ? 'ogg' : mime.extension(message.mimetype);
 
-      const fileName = `${folderUploads}/${fileID}-file-suport.${mime.extension(
-        message.mimetype
-      )}`;
+      const fileName = `${folderUploads}/${fileID}-file-suport.${mimetype}`;
 
       await fs.writeFile(fileName, buffer);
 
@@ -22,6 +21,10 @@ class DownloadingImg {
       throw new Error('Falha ao baixar arquivos');
     }
   }
+
+  private getMimetype(): string {
+    return '';
+  }
 }
 
-export const downloadingImg = new DownloadingImg();
+export const downloadFileService = new DownloadFileService();
