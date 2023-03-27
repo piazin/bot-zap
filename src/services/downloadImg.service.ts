@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import mime from 'mime-types';
-import { Message, Whatsapp } from 'venom-bot';
+import { Message, Whatsapp } from '@wppconnect-team/wppconnect';
 
 class DownloadingImg {
   async execute(client: Whatsapp, message: Message): Promise<string> {

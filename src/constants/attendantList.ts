@@ -1,41 +1,24 @@
-export const attendantList = [
-  {
-    title: 'Atendentes disponiveis 🧑‍💻',
-    rows: [
-      {
-        title: 'Andrey',
-        description: 'Suporte de Infraestrutura',
-      },
-      {
-        title: 'Sergio',
-        description: 'Suporte de Sistemas (Senior/SE Suite)',
-      },
-      {
-        title: 'Lucas',
-        description: 'Suporte de Infraestrutura',
-      },
-      {
-        title: 'Hernando',
-        description: 'Suporte de Sistemas (SAP/Frontline)',
-      },
-    ],
-  },
-];
+export const attendantList = `
+Atendentes disponiveis 🧑‍💻
+
+1 - Lucas (Suporte de Infraestrutura)
+2 - Sergio (Suporte de Sistemas Senior/SE Suite)
+3 - Hernando (Suporte de Sistemas SAP/Frontline)
+`;
 
 export const attendantsPhoneNumber = [
   {
-    name: 'Andrey',
-    number: '554391850807@c.us',
-  },
-  {
-    name: 'Sergio',
-    number: '554396638833@c.us',
-  },
-  {
+    id: '1',
     name: 'Lucas',
     number: '554391208707@c.us',
   },
   {
+    id: '2',
+    name: 'Sergio',
+    number: '554396638833@c.us',
+  },
+  {
+    id: '3',
     name: 'Hernando',
     number: '554399578877@c.us',
   },

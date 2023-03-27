@@ -25,13 +25,7 @@ export class SendAttendantList {
         );
       }
 
-      await client.sendListMenu(
-        to,
-        'Selecione um atendente',
-        '',
-        'Clique para selecionar',
-        attendantList
-      );
+      await client.sendText(to, attendantList);
 
       this.storageService.setStage(4);
     } catch (error) {

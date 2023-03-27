@@ -9,10 +9,11 @@ export class OpenNewTicket {
   private content: string;
   private subject: string;
   private userName: string;
+  private attachments: any;
   private userEmail: string;
-  private attachments;
+  private ticketNumber: number;
 
-  private storageService: StorageService;
+  private readonly storageService: StorageService;
 
   constructor(to: string) {
     this.storageService = new StorageService(to);
@@ -27,13 +28,13 @@ export class OpenNewTicket {
       this.storageService.setUserEmail(message.body);
 
       this.userEmail = message.body;
-      this.content = this.storageService.getProblemOrRequestMessage();
       this.userName = message.sender.pushname;
+      this.ticketNumber = this.generateTicketNumber();
+      this.content = this.storageService.getProblemOrRequestMessage();
       this.emailTo =
         process.env.NODE_ENV === 'production'
           ? 'ti@slpart.com.br'
           : this.userEmail;
-
       this.attachments = this.storageService.getPathSuportImg()
         ? this.storageService.getPathSuportImg()
         : null;
@@ -87,6 +88,7 @@ export class OpenNewTicket {
       user_name: this.userName,
       content: this.content,
       attachment: this.attachments,
+      ticketNumber: this.ticketNumber,
     });
   }
 
@@ -98,6 +100,12 @@ export class OpenNewTicket {
       user_name: this.userName,
       content: this.content,
       attachment: this.attachments,
+      ticketNumber: this.ticketNumber,
     });
+  }
+
+  private generateTicketNumber(): number {
+    const randomNumber = Math.floor(100000 + Math.random() * 900000);
+    return randomNumber;
   }
 }

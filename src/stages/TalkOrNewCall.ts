@@ -3,18 +3,14 @@ import { IStageParameters } from './stage.dto';
 import { StorageService } from '../services/storage.service';
 
 export class TalkOrNewCall {
-  private storageService: StorageService;
+  private readonly storageService: StorageService;
 
   constructor(to: string) {
     this.storageService = new StorageService(to);
   }
 
   async execute({ to, client, message }: IStageParameters) {
-    this.storageService = new StorageService(to);
-
     try {
-      if (!message.listResponse) return invalidOption.execute({ to, client });
-
       const options = {
         '1': {
           text: 'Para abrir um novo chamado, por favor, descreva o problema, dúvida ou requisição que você deseja fazer.',
@@ -40,8 +36,7 @@ export class TalkOrNewCall {
         },
       };
 
-      const selectedOption =
-        message.listResponse?.singleSelectReply?.selectedRowId;
+      const selectedOption = parseInt(message.body);
 
       const option = options[selectedOption];
 

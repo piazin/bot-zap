@@ -18,7 +18,7 @@ export class SendMessageToAttendant {
     try {
       if (!message?.listResponse) return invalidOption.execute({ to, client });
 
-      const attendantRequest = message.listResponse.title;
+      const attendantRequest = message.body;
 
       let thisAttendantExist = attendantsPhoneNumber.find(
         (attendant) => attendant.name === attendantRequest

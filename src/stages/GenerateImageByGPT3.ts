@@ -6,7 +6,8 @@ import { deleteImage } from '../utils/deleteImage';
 import { StorageService } from '../services/storage.service';
 
 export class GenerateImageByGPT3 {
-  private storageService: StorageService;
+  private readonly storageService: StorageService;
+  private readonly MAX_IDLE_TIME_MS: number = 600000;
 
   constructor(to: string) {
     this.storageService = new StorageService(to);
@@ -15,10 +16,8 @@ export class GenerateImageByGPT3 {
   async execute({ to, client, message }: IStageParameters): Promise<void> {
     try {
       if (message.body === '#sair') {
-        client.sendText(
-          to,
-          `Foi um prazer atende-lo(a) ${message.sender.pushname} 🤝, caso tenha mais alguma  dúvida pode sempre me procurar! Obrigado.`
-        );
+        const farewellMessage = `Foi um prazer ajudá-lo(a), ${message.sender.pushname} 🤝. Se tiver mais alguma dúvida, não hesite em entrar em contato. Obrigado!`;
+        client.sendText(to, farewellMessage);
         this.storageService.setStage(0);
         return;
       }
@@ -29,17 +28,20 @@ export class GenerateImageByGPT3 {
       const pathImage = await downloadImage(url);
       await client.sendImage(to, path.resolve(pathImage));
       deleteImage(pathImage);
-      await client.stopTyping(to);
 
-      setTimeout(() => {
+      const idleTime = setTimeout(() => {
         this.storageService.setStage(0);
-      }, 600000);
+      }, this.MAX_IDLE_TIME_MS);
+
+      idleTime.refresh();
     } catch (error) {
       console.error(
         '🚀 ~ file: GenerateImageByGPT3.ts:30 ~ GenerateImageByGPT3 ~ execute ~ error:',
         error
       );
       await client.sendText(to, 'Ops! Não foi possivel gerar está imagem :(');
+    } finally {
+      await client.stopTyping(to);
     }
   }
 }

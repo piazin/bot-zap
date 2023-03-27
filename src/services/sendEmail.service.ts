@@ -4,11 +4,12 @@ import path from 'path';
 
 interface ISendEmail {
   to: string;
-  user_name: string;
-  content: string;
-  attachment?: string;
-  subject?: string;
   cc?: string;
+  content: string;
+  subject?: string;
+  user_name: string;
+  ticketNumber: number;
+  attachment?: string;
 }
 
 class SendEmailService {

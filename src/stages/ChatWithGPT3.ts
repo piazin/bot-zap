@@ -14,7 +14,7 @@ export class ChatWithGPT3 {
   async execute({ to, client, message }: IStageParameters) {
     try {
       if (message.body === '#sair') {
-        const farewellMessage = `Foi um prazer atendê-lo(a) ${message.sender.pushname} 🤝, caso tenha mais alguma dúvida pode sempre me procurar! Obrigado.`;
+        const farewellMessage = `Foi um prazer ajudá-lo(a), ${message.sender.pushname} 🤝. Se tiver mais alguma dúvida, não hesite em entrar em contato. Obrigado!`;
         await client.sendText(to, farewellMessage);
         this.storageService.setStage(0);
         return;
@@ -23,7 +23,6 @@ export class ChatWithGPT3 {
       client.startTyping(to);
       const response = await new OpenIaService().createCompletion(message.body);
       await client.sendText(to, response);
-      await client.stopTyping(to);
 
       const idleTimeout = setTimeout(() => {
         this.storageService.setStage(0);
@@ -33,6 +32,8 @@ export class ChatWithGPT3 {
     } catch (error) {
       console.error(`Error in ChatWithGPT3.execute: ${error}`);
       await invalidOption.execute({ to, client });
+    } finally {
+      await client.stopTyping(to);
     }
   }
 }

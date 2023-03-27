@@ -10,7 +10,12 @@ import {
   GenerateImageByGPT3,
 } from './stages/_index';
 
-export const stages = [
+interface IStage {
+  description: string;
+  stage: any;
+}
+
+export const stages: IStage[] = [
   {
     description: 'Welcome to User',
     stage: Welcome,

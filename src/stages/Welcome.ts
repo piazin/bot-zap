@@ -2,9 +2,11 @@ import { IStageParameters } from './stage.dto';
 import { invalidOption } from './invalidOption';
 import { firstOptions } from '../constants/firstOptions';
 import { StorageService } from '../services/storage.service';
+import { ResponseService } from '../services/response.service';
 
 export class Welcome {
-  private storageService: StorageService;
+  private responseService: ResponseService;
+  private readonly storageService: StorageService;
 
   constructor(to: string) {
     this.storageService = new StorageService(to);
@@ -15,21 +17,15 @@ export class Welcome {
     client,
     message,
   }: IStageParameters): Promise<void | string> {
-    this.storageService = new StorageService(to);
+    this.responseService = new ResponseService(
+      'welcome',
+      message.sender.pushname
+    );
 
     try {
-      await client.sendText(
-        to,
-        `Olá ${message.sender.pushname}, \nEu sou o Cib, o assistente virtual do T.I SL.\nEstou aqui para ajudá-lo`
-      );
+      await client.sendText(to, this.responseService.returnRandomAnswer());
 
-      await client.sendListMenu(
-        to,
-        'Por favor, escolha uma das opções abaixo para que eu possa auxiliá-lo da melhor maneira possível',
-        '',
-        'selecionar',
-        firstOptions
-      );
+      await client.sendText(to, firstOptions);
 
       this.storageService.setStage(1);
     } catch (error) {
