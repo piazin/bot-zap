@@ -1,27 +1,29 @@
 import { IStageParameters } from './stage.dto';
 import { invalidOption } from './invalidOption';
 import { StorageService } from '../services/storage.service';
-import { downloadFileService } from '../services/downloadFile.service';
+import { FileService } from '../services/file.service';
 
 const ACCEPTED_MIME_TYPES = ['image/jpeg', undefined, 'audio/ogg; codecs=opus'];
 
 export class RequestUserEmail {
   private storageService: StorageService;
+  private fileService: FileService;
 
   constructor(to: string) {
     this.storageService = new StorageService(to);
   }
 
   async execute({ to, client, message }: IStageParameters): Promise<string | void> {
-    console.log('🚀 ~ file: RequestUserEmail.ts:16 ~ RequestUserEmail ~ execute ~ message:', message);
     try {
+      this.fileService = new FileService(client, message);
+
       if (!ACCEPTED_MIME_TYPES.includes(message.mimetype)) {
         await invalidOption.execute({ to, client });
         return;
       }
 
-      if (message.isMedia || message.isMMS || message.mimetype === 'audio/ogg; codecs=opus') {
-        var path = await downloadFileService.execute(client, message);
+      if (message.isMedia || message.isMMS) {
+        var path = await this.fileService.downloadFile();
         this.storageService.setPathSuportImg(path);
       }
 

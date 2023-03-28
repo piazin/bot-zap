@@ -2,4 +2,5 @@ node_modules
 tokens
 uploads/*.jpeg
 uploads/*.png
+uploads/*.mp3
 .env

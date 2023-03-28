@@ -1,11 +1,6 @@
 import responses from '../constants/welcome';
 
-type stageNames =
-  | 'welcome'
-  | 'talkAttendant'
-  | 'sendImageOrNo'
-  | 'selectAttendant'
-  | 'sendMessageToAttendant';
+type stageNames = 'welcome' | 'talkAttendant' | 'sendImageOrNo' | 'selectAttendant' | 'sendMessageToAttendant';
 
 export class ResponseService {
   private readonly responses: string[];
@@ -20,14 +15,12 @@ export class ResponseService {
 
   returnRandomAnswer() {
     if (this.stageName === 'welcome') {
-      return this.userName
-        ? this.generateRandomAnswerWithUserName()
-        : this.generateRandomAnswer();
+      return this.userName ? this.generateRandomAnswerWithUserName() : this.generateRandomAnswer();
     }
   }
 
   private generateRandomNumber(): number {
-    return Math.floor(Math.random() * this.responses.length + 1);
+    return Math.floor(Math.random() * this.responses.length);
   }
 
   private generateRandomAnswer(): string {
@@ -35,9 +28,6 @@ export class ResponseService {
   }
 
   private generateRandomAnswerWithUserName(): string {
-    return this.responses[this.generateRandomNumber()].replace(
-      '${user}',
-      this.userName
-    );
+    return this.responses[this.generateRandomNumber()].replace('${user}', this.userName);
   }
 }

@@ -15,11 +15,6 @@ export class Welcome {
   async execute({ to, client, message }: IStageParameters): Promise<void | string> {
     this.responseService = new ResponseService('welcome', message.sender.pushname);
 
-    if (message.mimetype === 'audio/ogg; codecs=opus') {
-      var base64 = await client.downloadMedia(message);
-      console.log(base64);
-    }
-
     try {
       await client.sendText(to, this.responseService.returnRandomAnswer());
 
