@@ -3,6 +3,8 @@ import { deleteImage } from '../utils/deleteImage';
 import { OpenIaService } from '../services/openIa.service';
 import { StorageService } from '../services/storage.service';
 import { sendEmailService } from '../services/sendEmail.service';
+import { SpeechToText } from '../apis/SpeechToText';
+import { FileService } from '../services/file.service';
 
 export class OpenNewTicket {
   private emailTo: string;
@@ -13,31 +15,35 @@ export class OpenNewTicket {
   private userEmail: string;
   private ticketNumber: number;
 
+  private fileService: FileService;
+  private readonly speechToText: SpeechToText;
   private readonly storageService: StorageService;
 
   constructor(to: string) {
     this.storageService = new StorageService(to);
+    this.speechToText = new SpeechToText();
   }
 
-  async execute({
-    to,
-    client,
-    message,
-  }: IStageParameters): Promise<void | string> {
-    try {
-      this.storageService.setUserEmail(message.body);
+  async execute({ to, client, message }: IStageParameters): Promise<void | string> {
+    this.fileService = new FileService(client, message);
 
-      this.userEmail = message.body;
+    try {
+      let userEmail = message.body;
+
+      if (message.mimetype === 'audio/ogg; codecs=opus') {
+        const audioPath = await this.fileService.downloadFile();
+        const audioText = await this.speechToText.execute(audioPath);
+        userEmail = audioText;
+      }
+
+      this.storageService.setUserEmail(userEmail);
+
+      this.userEmail = userEmail;
       this.userName = message.sender.pushname;
       this.ticketNumber = this.generateTicketNumber();
       this.content = this.storageService.getProblemOrRequestMessage();
-      this.emailTo =
-        process.env.NODE_ENV === 'production'
-          ? 'ti@slpart.com.br'
-          : this.userEmail;
-      this.attachments = this.storageService.getPathSuportImg()
-        ? this.storageService.getPathSuportImg()
-        : null;
+      this.emailTo = process.env.NODE_ENV === 'production' ? 'ti@slpart.com.br' : this.userEmail;
+      this.attachments = this.storageService.getPathSuportImg() ? this.storageService.getPathSuportImg() : null;
 
       client.sendText(
         to,
@@ -66,18 +72,14 @@ export class OpenNewTicket {
         'Seu chamado foi aberto com sucesso! Em breve você receberá atualizações sobre o status do chamado. Obrigado!'
       );
 
-      if (this.storageService.getPathSuportImg())
-        deleteImage(this.storageService.getPathSuportImg());
+      if (this.storageService.getPathSuportImg()) deleteImage(this.storageService.getPathSuportImg());
 
       this.storageService.setStage(0);
       this.storageService.setTicket(false);
       this.storageService.setPathSuportImg(null);
     } catch (error) {
       console.error('Error opening new ticket:', error);
-      await client.sendText(
-        to,
-        'Falha ao enviar o ticket, tente novamente mais tarde.'
-      );
+      await client.sendText(to, 'Falha ao enviar o ticket, tente novamente mais tarde.');
     }
   }
 

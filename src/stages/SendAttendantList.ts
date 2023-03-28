@@ -14,9 +14,8 @@ export class SendAttendantList {
   }
 
   async execute({ to, client, message }: IStageParameters): Promise<void | string> {
+    this.fileService = new FileService(client, message);
     try {
-      this.fileService = new FileService(client, message);
-
       if (message.isMedia || message.isMMS) {
         storage[to].pathSuportImg = await this.fileService.downloadFile();
       }

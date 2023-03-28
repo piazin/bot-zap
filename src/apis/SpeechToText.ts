@@ -39,8 +39,8 @@ export class SpeechToText {
 
       return transcript;
     } catch (err) {
-      return 'Ops, ocorreu um erro';
       console.error(err);
+      return 'Ops, ocorreu um erro';
     }
   }
 }

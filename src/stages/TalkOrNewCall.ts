@@ -53,8 +53,9 @@ export class TalkOrNewCall {
         const audioText = await this.speechToText.execute(audioPath);
         console.log('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ audioText:', audioText);
         const response = await this.openIaService.createCompletion(
-          `Baseado neste neste texto \n ${audioText} \n Qual dessas respostas se enquadra melhor? \n 1 - Abrir um novo chamado 2 - Falar com um de nossos atendentes 3 - Converse com chat GPT3! 4 - Gerar imagem, usando a IA DALL-E! \n Caso encontre me devolta apenas o numero da resposta caso não acha nenhuma opção parecida devolva 0`
+          `Baseado neste neste texto \n ${audioText} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT \n 4 - Gerar imagem, usando a IA DALL-E! \n\n Caso encontre me devolva apenas o numero da resposta caso não ache nenhuma opção parecida devolva 0`
         );
+        console.log('🚀 ~ file: TalkOrNewCall.ts:58 ~ TalkOrNewCall ~ execute ~ response:', response);
 
         selectedOption = parseInt(response.replace('.', ''));
       }
