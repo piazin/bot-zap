@@ -5,6 +5,7 @@ import { StorageService } from '../services/storage.service';
 import { sendEmailService } from '../services/sendEmail.service';
 import { SpeechToText } from '../apis/SpeechToText';
 import { FileService } from '../services/file.service';
+import { ResponseService } from '../services/response.service';
 
 export class OpenNewTicket {
   private emailTo: string;
@@ -18,10 +19,12 @@ export class OpenNewTicket {
   private fileService: FileService;
   private readonly speechToText: SpeechToText;
   private readonly storageService: StorageService;
+  private readonly responseService: ResponseService;
 
   constructor(to: string) {
     this.storageService = new StorageService(to);
     this.speechToText = new SpeechToText();
+    this.responseService = new ResponseService('OpenNewTicket');
   }
 
   async execute({ to, client, message }: IStageParameters): Promise<void | string> {
@@ -30,41 +33,25 @@ export class OpenNewTicket {
     try {
       let userEmail = message.body;
 
-      if (message.mimetype === 'audio/ogg; codecs=opus') {
-        const audioPath = await this.fileService.downloadFile();
-        const audioText = await this.speechToText.execute(audioPath);
-        this.fileService.deleteFile(audioPath);
-        userEmail = audioText;
-      }
-
-      this.storageService.setUserEmail(userEmail);
+      if (message.mimetype === 'audio/ogg; codecs=opus')
+        userEmail = await this.convertSpeechToText();
 
       this.userEmail = userEmail;
       this.userName = message.sender.pushname;
+      this.storageService.setUserEmail(userEmail);
       this.ticketNumber = this.generateTicketNumber();
       this.content = this.storageService.getProblemOrRequestMessage();
       this.emailTo = process.env.NODE_ENV === 'production' ? 'ti@slpart.com.br' : this.userEmail;
-      this.attachments = this.storageService.getPathSuportImg() ? this.storageService.getPathSuportImg() : null;
+      this.attachments = this.storageService.getPathSuportImg()
+        ? this.storageService.getPathSuportImg()
+        : null;
 
       client.sendText(
         to,
         'Estamos abrindo seu chamado, por favor, aguarde um momento enquanto processamos as informações.'
       );
 
-      const requestOrIncident = await new OpenIaService().createCompletion(
-        `isto é uma requisição ou incidente? \n ${this.content}, \n Responda apenas com requisição ou incidente`
-      );
-
-      const matchLetter: RegExpMatchArray | null = requestOrIncident
-        ?.toLowerCase()
-        .match(/\b(incidente|requisição)\b/g);
-
-      if (!matchLetter) {
-        this.sendTicketEmail();
-        return;
-      }
-
-      this.subject = matchLetter[0] === 'requisição' ? 'requisicao' : '';
+      await this.getCallType();
 
       await this.sendEmailToSupport();
 
@@ -73,15 +60,34 @@ export class OpenNewTicket {
         'Seu chamado foi aberto com sucesso! Em breve você receberá atualizações sobre o status do chamado. Obrigado!'
       );
 
-      if (this.storageService.getPathSuportImg()) deleteImage(this.storageService.getPathSuportImg());
+      if (this.storageService.getPathSuportImg())
+        deleteImage(this.storageService.getPathSuportImg());
 
-      this.storageService.setStage(0);
-      this.storageService.setTicket(false);
-      this.storageService.setPathSuportImg(null);
+      this.storageService.clear();
     } catch (error) {
       console.error('Error opening new ticket:', error);
       await client.sendText(to, 'Falha ao enviar o ticket, tente novamente mais tarde.');
     }
+  }
+
+  private async convertSpeechToText(): Promise<string> {
+    const audioPath = await this.fileService.downloadFile();
+    const audioText = await this.speechToText.execute(audioPath);
+    await this.fileService.deleteFile(audioPath);
+
+    return audioText;
+  }
+
+  private async getCallType(): Promise<void> {
+    const requestOrIncident = await new OpenIaService().createCompletion(
+      `isto é uma requisição ou incidente? \n ${this.content}, \n Responda apenas com requisição ou incidente`
+    );
+
+    const matchLetter: RegExpMatchArray | null = requestOrIncident
+      ?.toLowerCase()
+      .match(/\b(incidente|requisição)\b/g);
+
+    this.subject = matchLetter[0] === 'requisição' ? 'requisicao' : '';
   }
 
   private async sendTicketEmail() {

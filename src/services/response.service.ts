@@ -1,22 +1,34 @@
-import responses from '../constants/welcome';
+import responses from '../constants';
 
-type stageNames = 'welcome' | 'talkAttendant' | 'sendImageOrNo' | 'selectAttendant' | 'sendMessageToAttendant';
+type stageNames =
+  | 'welcome'
+  | 'talkAttendant'
+  | 'sendImageOrNo'
+  | 'selectAttendant'
+  | 'sendMessageToAttendant'
+  | 'opennewticket';
 
 export class ResponseService {
-  private readonly responses: string[];
-  private readonly stageName: stageNames;
+  private responses: string[];
+  private stageName: string;
   private readonly userName: string = undefined;
 
-  constructor(stageName: stageNames, userName?: string) {
+  constructor(userName?: string) {
     this.userName = userName;
-    this.stageName = stageName;
-    this.responses = responses;
   }
 
-  returnRandomAnswer() {
-    if (this.stageName === 'welcome') {
-      return this.userName ? this.generateRandomAnswerWithUserName() : this.generateRandomAnswer();
-    }
+  getRandomAnswer(stageName: stageNames) {
+    this.setStage(stageName);
+    this.setResponsesByStage();
+    return this.userName ? this.generateRandomAnswerWithUserName() : this.generateRandomAnswer();
+  }
+
+  private setStage(stageName: stageNames): void {
+    this.stageName = Object.keys(responses).find((res) => res === stageName);
+  }
+
+  private setResponsesByStage(): void {
+    this.responses = responses[this.stageName];
   }
 
   private generateRandomNumber(): number {

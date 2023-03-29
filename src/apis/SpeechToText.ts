@@ -30,12 +30,10 @@ export class SpeechToText {
 
       //@ts-ignore
       const [response] = await this.client.recognize(request);
-      const transcriptions = response.results.map((result) => result.alternatives[0]);
 
-      const transcript = transcriptions.reduce((acc, element) => {
-        acc += element.transcript;
-        return acc;
-      }, '');
+      const transcript = response.results
+        .map((result) => result.alternatives[0].transcript)
+        .join(' ');
 
       return transcript;
     } catch (err) {

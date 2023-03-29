@@ -6,7 +6,13 @@ Atendentes disponiveis 🧑‍💻
 3 - Hernando (Suporte de Sistemas SAP/Frontline)
 `;
 
-export const attendantsPhoneNumber = [
+export interface IAttendantsPhoneNumber {
+  id: string;
+  name: string;
+  number: string;
+}
+
+export const attendantsPhoneNumber: IAttendantsPhoneNumber[] = [
   {
     id: '1',
     name: 'Lucas',

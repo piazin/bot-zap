@@ -4,8 +4,10 @@ Este projeto foi desenvolvido na intenção de gerenciar melhor os chamados de n
 
 ## 🛠️ Construído com
 
-- [Venom](https://github.com/orkestral/venom) - Usado para envio e recebimento de mensagens
+- [WPPconnect](https://wppconnect.io/pt-BR/) - Usado para envio e recebimento de mensagens
 - [Nodemailer](https://nodemailer.com/about/) - Envio de emails
+- [OpenAI](https://github.com/openai/openai-node) - Integração do chat gpt
+- [Google Speech](https://www.npmjs.com/package/@google-cloud/speech) - Converter voz em texto
 
 ## ✒️ Autores
 

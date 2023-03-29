@@ -13,10 +13,10 @@ export class Welcome {
   }
 
   async execute({ to, client, message }: IStageParameters): Promise<void | string> {
-    this.responseService = new ResponseService('welcome', message.sender.pushname);
+    this.responseService = new ResponseService(message.sender.pushname);
 
     try {
-      await client.sendText(to, this.responseService.returnRandomAnswer());
+      await client.sendText(to, this.responseService.getRandomAnswer('welcome'));
 
       await client.sendText(to, firstOptions);
 

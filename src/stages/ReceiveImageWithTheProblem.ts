@@ -25,12 +25,8 @@ export class ReceiveImageWithTheProblem {
 
       let problemMessage = message.body;
 
-      if (message.mimetype === 'audio/ogg; codecs=opus') {
-        const audioPath = await this.fileService.downloadFile();
-        const audioText = await this.speechToText.execute(audioPath);
-        await this.fileService.deleteFile(audioPath);
-        problemMessage = audioText;
-      }
+      if (message.mimetype === 'audio/ogg; codecs=opus')
+        problemMessage = await this.convertSpeechToText();
 
       this.storageService.setProblemOrRequestMessage(problemMessage);
 
@@ -40,5 +36,13 @@ export class ReceiveImageWithTheProblem {
       console.error('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:', error);
       await invalidOption.execute({ to, client });
     }
+  }
+
+  private async convertSpeechToText(): Promise<string> {
+    const audioPath = await this.fileService.downloadFile();
+    const audioText = await this.speechToText.execute(audioPath);
+    await this.fileService.deleteFile(audioPath);
+
+    return audioText;
   }
 }

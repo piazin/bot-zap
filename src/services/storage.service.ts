@@ -56,4 +56,8 @@ export class StorageService {
   setUserEmail(email: string): void {
     this.getUserStorage().userEmail = email;
   }
+
+  clear(): void {
+    storage[this.to] = { stage: 0 };
+  }
 }
