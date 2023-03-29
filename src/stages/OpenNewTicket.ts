@@ -33,6 +33,7 @@ export class OpenNewTicket {
       if (message.mimetype === 'audio/ogg; codecs=opus') {
         const audioPath = await this.fileService.downloadFile();
         const audioText = await this.speechToText.execute(audioPath);
+        this.fileService.deleteFile(audioPath);
         userEmail = audioText;
       }
 

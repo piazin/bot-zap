@@ -51,13 +51,13 @@ export class TalkOrNewCall {
       if (message.mimetype === 'audio/ogg; codecs=opus') {
         const audioPath = await this.fileService.downloadFile();
         const audioText = await this.speechToText.execute(audioPath);
-        console.log('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ audioText:', audioText);
-        const response = await this.openIaService.createCompletion(
-          `Baseado neste neste texto \n ${audioText} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT \n 4 - Gerar imagem, usando a IA DALL-E! \n\n Caso encontre me devolva apenas o numero da resposta caso não ache nenhuma opção parecida devolva 0`
-        );
-        console.log('🚀 ~ file: TalkOrNewCall.ts:58 ~ TalkOrNewCall ~ execute ~ response:', response);
+        await this.fileService.deleteFile(audioPath);
 
-        selectedOption = parseInt(response.replace('.', ''));
+        const response = await this.openIaService.createCompletion(
+          `Baseado neste neste texto \n\n ${audioText} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT \n 4 - Gerar imagem, usando a IA DALL-E! \n\n Caso encontre uma opção parecida responda apenas com o numero da opção, caso não ache nenhuma opção parecida retorne apenas 0`
+        );
+
+        selectedOption = parseInt(response.replace(/[^0-9]/g, ''));
       }
 
       const option = options[selectedOption];

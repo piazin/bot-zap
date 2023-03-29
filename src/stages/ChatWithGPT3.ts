@@ -34,6 +34,7 @@ export class ChatWithGPT3 {
       if (message.mimetype === 'audio/ogg; codecs=opus') {
         const audioPath = await this.fileService.downloadFile();
         const audioText = await this.speechToText.execute(audioPath);
+        await this.fileService.deleteFile(audioPath);
         userQuestion = audioText;
       }
 
