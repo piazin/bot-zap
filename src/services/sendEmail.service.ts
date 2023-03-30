@@ -8,19 +8,12 @@ interface ISendEmail {
   content: string;
   subject?: string;
   user_name: string;
-  ticketNumber: number;
+  ticketNumber: string;
   attachment?: string;
 }
 
 class SendEmailService {
-  async execute({
-    to,
-    user_name,
-    content,
-    attachment,
-    subject,
-    cc,
-  }: ISendEmail) {
+  async execute({ to, user_name, content, attachment, subject, cc, ticketNumber }: ISendEmail) {
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -43,15 +36,10 @@ class SendEmailService {
       cc,
       subject: ` ${
         subject
-          ? `${subject}: Novo chamado recebido!`
-          : 'Seu chamado foi recebido com sucesso'
+          ? `${subject}: Novo chamado recebido ${ticketNumber}`
+          : `Seu chamado foi recebido com sucesso ${ticketNumber}`
       } `,
-      html: await returnEmailTemplate(
-        content,
-        user_name,
-        to,
-        thereIsAttachment
-      ),
+      html: await returnEmailTemplate(content, user_name, to, thereIsAttachment, ticketNumber),
       attachments: attachment
         ? [
             {
@@ -71,14 +59,12 @@ var returnEmailTemplate = async (
   content: string,
   userName: string,
   userEmail: string,
-  thereIsAttachment: string
+  thereIsAttachment: string,
+  ticketNumber: string
 ) => {
-  var emailTemplate = await fs.readFile(
-    path.resolve('./src/public/email.html'),
-    {
-      encoding: 'utf-8',
-    }
-  );
+  var emailTemplate = await fs.readFile(path.resolve('./src/public/email.html'), {
+    encoding: 'utf-8',
+  });
 
   var dateAndHours = new Date().toLocaleString('pt-BR');
 
@@ -88,7 +74,7 @@ var returnEmailTemplate = async (
     '{content}': content,
     '{userName}': userName,
     '{userEmail}': userEmail,
-    '{ticketNumber}': '12345',
+    '{ticketNumber}': ticketNumber,
     '{dateAndHours}': dateAndHours,
     '{widthAttachment}': widthAttachment,
     '{thereIsAttachment}': thereIsAttachment,

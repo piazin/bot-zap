@@ -1,11 +1,11 @@
-import { create, Whatsapp, Message } from '@wppconnect-team/wppconnect';
+import { config } from 'dotenv';
 import { stages } from './stages';
 import { StorageService } from './services/storage.service';
-import { config } from 'dotenv';
+import { create, Whatsapp, Message } from '@wppconnect-team/wppconnect';
 
 config();
 
-create({ session: 'suport-ti' })
+create({ session: 'support-ti', disableWelcome: true })
   .then((client) => start(client))
   .catch((err) => console.error('🚀 ~ file: app.ts:6 ~ err', err));
 

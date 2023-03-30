@@ -1,11 +1,11 @@
 import { IStageParameters } from './stage.dto';
 import { deleteImage } from '../utils/deleteImage';
-import { OpenIaService } from '../services/openIa.service';
-import { StorageService } from '../services/storage.service';
-import { sendEmailService } from '../services/sendEmail.service';
 import { SpeechToText } from '../apis/SpeechToText';
 import { FileService } from '../services/file.service';
+import { OpenIaService } from '../services/openIa.service';
+import { StorageService } from '../services/storage.service';
 import { ResponseService } from '../services/response.service';
+import { sendEmailService } from '../services/sendEmail.service';
 
 export class OpenNewTicket {
   private emailTo: string;
@@ -14,7 +14,7 @@ export class OpenNewTicket {
   private userName: string;
   private attachments: any;
   private userEmail: string;
-  private ticketNumber: number;
+  private ticketNumber: string;
 
   private fileService: FileService;
   private readonly speechToText: SpeechToText;
@@ -24,7 +24,7 @@ export class OpenNewTicket {
   constructor(to: string) {
     this.storageService = new StorageService(to);
     this.speechToText = new SpeechToText();
-    this.responseService = new ResponseService('OpenNewTicket');
+    this.responseService = new ResponseService();
   }
 
   async execute({ to, client, message }: IStageParameters): Promise<void | string> {
@@ -46,13 +46,10 @@ export class OpenNewTicket {
         ? this.storageService.getPathSuportImg()
         : null;
 
-      client.sendText(
-        to,
-        'Estamos abrindo seu chamado, por favor, aguarde um momento enquanto processamos as informações.'
-      );
+      const replyMessage = this.responseService.getRandomAnswer('opennewticket');
+      client.sendText(to, replyMessage);
 
-      await this.getCallType();
-
+      await this.getTicketType();
       await this.sendEmailToSupport();
 
       client.sendText(
@@ -78,7 +75,7 @@ export class OpenNewTicket {
     return audioText;
   }
 
-  private async getCallType(): Promise<void> {
+  private async getTicketType(): Promise<void> {
     const requestOrIncident = await new OpenIaService().createCompletion(
       `isto é uma requisição ou incidente? \n ${this.content}, \n Responda apenas com requisição ou incidente`
     );
@@ -113,8 +110,8 @@ export class OpenNewTicket {
     });
   }
 
-  private generateTicketNumber(): number {
+  private generateTicketNumber(): string {
     const randomNumber = Math.floor(100000 + Math.random() * 900000);
-    return randomNumber;
+    return String(randomNumber);
   }
 }

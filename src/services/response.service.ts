@@ -1,30 +1,42 @@
 import responses from '../constants';
+import { OpenIaService } from './openIa.service';
 
 type stageNames =
   | 'welcome'
   | 'talkAttendant'
-  | 'sendImageOrNo'
+  | 'receiveImageWithTheProblem'
   | 'selectAttendant'
   | 'sendMessageToAttendant'
   | 'opennewticket';
 
 export class ResponseService {
-  private responses: string[];
   private stageName: string;
+  private responses: string[];
+  private completationByGpt: string = '';
+  private readonly openai: OpenIaService;
   private readonly userName: string = undefined;
 
   constructor(userName?: string) {
     this.userName = userName;
+    this.openai = new OpenIaService();
   }
 
   getRandomAnswer(stageName: stageNames) {
-    this.setStage(stageName);
+    this.stageName = stageName;
     this.setResponsesByStage();
     return this.userName ? this.generateRandomAnswerWithUserName() : this.generateRandomAnswer();
   }
 
-  private setStage(stageName: stageNames): void {
-    this.stageName = Object.keys(responses).find((res) => res === stageName);
+  async getRandomAnswerByGpt(stageName: stageNames, userMessage: string): Promise<string> {
+    const completation = responses[stageName];
+    this.completationByGpt = completation.replace('{userMessage}', userMessage);
+
+    var response = (await this.openai.createCompletion(this.completationByGpt)).replace(
+      '{user}',
+      this.userName
+    );
+
+    return response;
   }
 
   private setResponsesByStage(): void {
@@ -32,7 +44,7 @@ export class ResponseService {
   }
 
   private generateRandomNumber(): number {
-    return Math.floor(Math.random() * this.responses.length);
+    return Math.floor(Math.random() * this.responses.length || 0);
   }
 
   private generateRandomAnswer(): string {

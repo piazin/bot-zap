@@ -46,20 +46,18 @@ export class TalkOrNewCall {
         },
       };
 
-      var selectedOption = parseInt(message.body);
+      let userMessage = message.body;
 
       if (message.mimetype === 'audio/ogg; codecs=opus') {
-        const audioPath = await this.fileService.downloadFile();
-        const audioText = await this.speechToText.execute(audioPath);
-        await this.fileService.deleteFile(audioPath);
-
-        const response = await this.openIaService.createCompletion(
-          `Baseado neste neste texto \n\n ${audioText} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT \n 4 - Gerar imagem, usando a IA DALL-E! \n\n Caso encontre uma opção parecida responda apenas com o numero da opção, caso não ache nenhuma opção parecida retorne apenas 0`
-        );
-
-        selectedOption = parseInt(response.replace(/[^0-9]/g, ''));
+        const audioText = await this.convertSpeechToText();
+        userMessage = audioText;
       }
 
+      const response = await this.openIaService.createCompletion(
+        `Baseado neste neste texto \n\n ${userMessage} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT \n 4 - Gerar imagem, usando a IA DALL-E! \n\n Caso encontre uma opção parecida responda apenas com o numero da opção, caso não ache nenhuma opção parecida retorne apenas 0`
+      );
+
+      const selectedOption = parseInt(response.replace(/[^0-9]/g, ''));
       const option = options[selectedOption];
 
       if (!option) {
@@ -75,5 +73,13 @@ export class TalkOrNewCall {
       console.error('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:', error);
       return invalidOption.execute({ to, client });
     }
+  }
+
+  private async convertSpeechToText(): Promise<string> {
+    const audioPath = await this.fileService.downloadFile();
+    const audioText = await this.speechToText.execute(audioPath);
+    await this.fileService.deleteFile(audioPath);
+
+    return audioText;
   }
 }
