@@ -7,6 +7,7 @@ import { RequestUserEmail } from './RequestUserEmail';
 import { OpenNewTicket } from './OpenNewTicket';
 import { ChatWithGPT3 } from './ChatWithGPT3';
 import { GenerateImageByGPT3 } from './GenerateImageByGPT3';
+import { ConfirmEmail } from './ConfirmEmail';
 
 export {
   Welcome,
@@ -18,4 +19,5 @@ export {
   OpenNewTicket,
   ChatWithGPT3,
   GenerateImageByGPT3,
+  ConfirmEmail,
 };

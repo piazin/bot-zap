@@ -18,6 +18,7 @@ export class OpenNewTicket {
 
   private fileService: FileService;
   private readonly speechToText: SpeechToText;
+  private readonly openIaService: OpenIaService;
   private readonly storageService: StorageService;
   private readonly responseService: ResponseService;
 
@@ -25,21 +26,28 @@ export class OpenNewTicket {
     this.storageService = new StorageService(to);
     this.speechToText = new SpeechToText();
     this.responseService = new ResponseService();
+    this.openIaService = new OpenIaService();
   }
 
   async execute({ to, client, message }: IStageParameters): Promise<void | string> {
     this.fileService = new FileService(client, message);
 
     try {
-      let userEmail = message.body;
-
+      let userMessage = message.body;
       if (message.mimetype === 'audio/ogg; codecs=opus')
-        userEmail = await this.convertSpeechToText();
+        userMessage = await this.convertSpeechToText();
 
-      this.userEmail = userEmail;
+      const isEmailHasBeenConfirmed = await this.getEmailConfirmation(userMessage);
+
+      if (isEmailHasBeenConfirmed === 0) {
+        this.storageService.setStage(6);
+        await client.sendText(to, 'Muito bem, qual é o e-mail correto?');
+        return;
+      }
+
       this.userName = message.sender.pushname;
-      this.storageService.setUserEmail(userEmail);
       this.ticketNumber = this.generateTicketNumber();
+      this.userEmail = this.storageService.getUserEmail();
       this.content = this.storageService.getProblemOrRequestMessage();
       this.emailTo = process.env.NODE_ENV === 'production' ? 'ti@slpart.com.br' : this.userEmail;
       this.attachments = this.storageService.getPathSuportImg()
@@ -76,7 +84,7 @@ export class OpenNewTicket {
   }
 
   private async getTicketType(): Promise<void> {
-    const requestOrIncident = await new OpenIaService().createCompletion(
+    const requestOrIncident = await this.openIaService.createCompletion(
       `isto é uma requisição ou incidente? \n ${this.content}, \n Responda apenas com requisição ou incidente`
     );
 
@@ -113,5 +121,15 @@ export class OpenNewTicket {
   private generateTicketNumber(): string {
     const randomNumber = Math.floor(100000 + Math.random() * 900000);
     return String(randomNumber);
+  }
+
+  private async getEmailConfirmation(userMessage: string): Promise<number> {
+    const response = await this.openIaService.createCompletion(
+      `Está frase é uma confirmação ou uma negação? \n\n ${userMessage} \n\n Caso seja uma confirmação retorne 1 caso seja uma negação retorne 0, retorne apenas o numero`
+    );
+
+    const isEmailHasBeenConfirmed = response.replace(/[^0-9]/g, '');
+
+    return parseInt(isEmailHasBeenConfirmed);
   }
 }

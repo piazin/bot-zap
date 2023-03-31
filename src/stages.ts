@@ -8,6 +8,7 @@ import {
   OpenNewTicket,
   ChatWithGPT3,
   GenerateImageByGPT3,
+  ConfirmEmail,
 } from './stages/_index';
 
 interface IStage {
@@ -39,6 +40,10 @@ export const stages: IStage[] = [
   {
     description: 'Request User Email',
     stage: RequestUserEmail,
+  },
+  {
+    description: 'Confirm User Email',
+    stage: ConfirmEmail,
   },
   {
     description: 'Open New Ticket',
