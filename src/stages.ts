@@ -53,8 +53,4 @@ export const stages: IStage[] = [
     description: 'Chat with GPT3',
     stage: ChatWithGPT3,
   },
-  {
-    description: 'Generate image by IA',
-    stage: GenerateImageByGPT3,
-  },
 ];

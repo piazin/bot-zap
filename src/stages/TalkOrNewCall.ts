@@ -38,12 +38,6 @@ export class TalkOrNewCall {
           nextStage: 8,
           toLeave: true,
         },
-        '4': {
-          text: 'Descreva com detalhes a imagem que deseja.',
-          isTicket: false,
-          nextStage: 9,
-          toLeave: true,
-        },
       };
 
       let userMessage = message.body;
@@ -54,7 +48,7 @@ export class TalkOrNewCall {
       }
 
       const response = await this.openIaService.createCompletion(
-        `Baseado neste neste texto \n\n ${userMessage} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT \n 4 - Gerar imagem, usando a IA DALL-E! \n\n Caso encontre uma opção parecida responda apenas com o numero da opção, caso não ache nenhuma opção parecida retorne uma resposta que possa ajudar o usuário`
+        `Baseado neste neste texto \n\n ${userMessage} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT \n`
       );
 
       const selectedOption = parseInt(response.replace(/[^0-9]/g, ''));
