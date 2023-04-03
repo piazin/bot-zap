@@ -3,7 +3,7 @@ import { Configuration, OpenAIApi } from 'openai';
 export class OpenIaService {
   constructor(
     private readonly configuration = new Configuration({
-      organization: 'org-S3JUdsSdANNUe1W1by6q6HYz',
+      organization: 'org-bvRQkK5Qyl0V8lhPpHirrOEv',
       apiKey: process.env.OPENAI_API_KEY,
     }),
     private readonly openai = new OpenAIApi(configuration)
@@ -20,7 +20,10 @@ export class OpenIaService {
 
       return completation.data.choices[0].text;
     } catch (error) {
-      console.error('🚀 ~ file: open_ia.service.ts:26 ~ OpenIaService ~ execute ~ error:', error);
+      console.error(
+        '🚀 ~ file: open_ia.service.ts:26 ~ OpenIaService ~ execute ~ error:',
+        error.message
+      );
       return null;
     }
   }
