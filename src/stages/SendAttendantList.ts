@@ -31,11 +31,11 @@ export class SendAttendantList {
 
         Qual desses atendentes melhor se encaixa para atender este chamado?
 
-        Andrey - Manutenção de computadores, notebooks, celulares, problemas em softwares, problemas com excel, google, drive, emails, solicitações de compras, aquisição de novos equipamentos
+        Andrey - Atende chamados relacionados á Manutenção de computadores, notebooks, celulares, cameras, impressoras, telefonia, Ramal, Thin client, Anti virus, Certificado digital, problemas em softwares, problemas com excel, google, drive, emails, solicitações de compras, aquisição de novos equipamentos
 
-        Sergio - Atende todos os chamados relacionados ao SE Suite e Senior
+        Sergio - Atende todos os chamados relacionados ao SE Suite, Relogio ponto, Senior, Painel de Gestão, Banco de horas, Gestão beneficios, Controle Ponto, Segurança Medicina, Senior X, Ferias etc...
 
-        Hernando - Atende todos os chamados relacionados ao SAP e Frontline
+        Hernando - Atende todos os chamados relacionados ao SAP, Frontline, B3, OOBJ, Bank Plus, Gestão Armazen, Tax Plus, Power bi, Fluxo de caixa
 
         Me devolva uma mensagem igual a está: 
 

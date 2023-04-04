@@ -16,6 +16,7 @@ export class OpenIaService {
         prompt: message,
         temperature: 1,
         max_tokens: 3000,
+        stop: ['/s'],
       });
 
       return completation.data.choices[0].text;

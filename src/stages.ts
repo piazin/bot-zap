@@ -7,8 +7,8 @@ import {
   RequestUserEmail,
   OpenNewTicket,
   ChatWithGPT3,
-  GenerateImageByGPT3,
   ConfirmEmail,
+  InfoSL,
 } from './stages/_index';
 
 interface IStage {
@@ -52,5 +52,9 @@ export const stages: IStage[] = [
   {
     description: 'Chat with GPT3',
     stage: ChatWithGPT3,
+  },
+  {
+    description: 'Info SL',
+    stage: InfoSL,
   },
 ];

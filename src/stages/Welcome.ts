@@ -29,7 +29,7 @@ export class Welcome {
       }
 
       const replyMessage = await this.responseService.getRandomAnswerByGpt('welcome', userMessage);
-      await client.sendText(to, replyMessage);
+      await client.sendText(to, replyMessage.replace(/\s\s+/g, ''));
 
       await client.sendText(to, firstOptions);
 

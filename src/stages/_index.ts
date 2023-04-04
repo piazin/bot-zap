@@ -1,3 +1,4 @@
+import { InfoSL } from './InfoSL';
 import { Welcome } from './Welcome';
 import { TalkOrNewCall } from './TalkOrNewCall';
 import { SendAttendantList } from './SendAttendantList';
@@ -20,4 +21,5 @@ export {
   ChatWithGPT3,
   GenerateImageByGPT3,
   ConfirmEmail,
+  InfoSL,
 };

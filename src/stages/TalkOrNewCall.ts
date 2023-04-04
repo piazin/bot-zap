@@ -38,6 +38,12 @@ export class TalkOrNewCall {
           nextStage: 8,
           toLeave: true,
         },
+        '4': {
+          text: 'Oque deseja saber sobre a empressa?',
+          isTicket: false,
+          nextStage: 9,
+          toLeave: true,
+        },
       };
 
       let userMessage = message.body;
@@ -48,7 +54,7 @@ export class TalkOrNewCall {
       }
 
       const response = await this.openIaService.createCompletion(
-        `Baseado neste neste texto \n\n ${userMessage} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT \n`
+        `Baseado neste neste texto \n\n ${userMessage} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT, 4 - Informações sobre a empressa SL \n`
       );
 
       const selectedOption = parseInt(response.replace(/[^0-9]/g, ''));
