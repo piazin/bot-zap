@@ -103,8 +103,8 @@ export class OpenNewTicket {
       ?.toLowerCase()
       .match(/\b(incidente|requisição)\b/g);
 
-    requestOrIncident = matchLetter[0] === 'requisição' ? 'requisicao' : '';
-    this.subject = `${requestOrIncident}: Novo chamado recebido ${this.ticketNumber}`;
+    requestOrIncident = matchLetter[0] === 'requisição' ? 'requisicao:' : '';
+    this.subject = `${requestOrIncident} Ticket ${this.ticketNumber}`;
   }
 
   private async sendTicketEmail() {
@@ -123,7 +123,7 @@ export class OpenNewTicket {
   private async sendEmailToSupport() {
     await sendEmailService.execute({
       to:
-        process.env.NODE_ENV === 'production' ? 'suporte2@slpart.com.br' : 'suporte2@slpart.com.br',
+        process.env.NODE_ENV === 'production' ? 'suporte@slpart.com.br' : 'suporte2@slpart.com.br',
       subject: this.subject,
       user_name: this.userName,
       content: this.content,

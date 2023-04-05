@@ -22,6 +22,8 @@ export class SendMessageToAttendant {
     this.fileService = new FileService(client, message);
 
     try {
+      await client.startTyping(to);
+
       let attendantRequest = message.body;
 
       if (message.mimetype === 'audio/ogg; codecs=opus') {
@@ -49,6 +51,8 @@ export class SendMessageToAttendant {
     } catch (error) {
       console.error('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:', error);
       return invalidOption.execute({ to, client });
+    } finally {
+      await client.stopTyping(to);
     }
   }
 

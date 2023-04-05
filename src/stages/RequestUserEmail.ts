@@ -15,6 +15,8 @@ export class RequestUserEmail {
 
   async execute({ to, client, message }: IStageParameters): Promise<string | void> {
     try {
+      await client.startTyping(to);
+
       this.fileService = new FileService(client, message);
 
       if (!ACCEPTED_MIME_TYPES.includes(message.mimetype)) {
@@ -32,6 +34,8 @@ export class RequestUserEmail {
     } catch (error) {
       console.error(`Error in RequestUserEmail.execute: ${error}`);
       await invalidOption.execute({ to, client });
+    } finally {
+      await client.stopTyping(to);
     }
   }
 }

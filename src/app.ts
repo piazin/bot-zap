@@ -5,6 +5,8 @@ import { create, Whatsapp, Message } from '@wppconnect-team/wppconnect';
 
 config();
 
+const MAX_IDLE_TIME_MS = 600000;
+
 create({ session: 'support-ti', disableWelcome: true })
   .then((client) => start(client))
   .catch((err) => console.error('🚀 ~ file: app.ts:6 ~ err', err));
@@ -21,5 +23,9 @@ function start(client: Whatsapp): void {
     const stageInstance = new currentStage(to);
     //@ts-ignore
     stageInstance.execute({ to, client, message });
+
+    let idleTimeout = setTimeout(() => storageService.clear(), MAX_IDLE_TIME_MS);
+
+    idleTimeout.refresh();
   });
 }
