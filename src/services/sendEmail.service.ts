@@ -10,10 +10,20 @@ interface ISendEmail {
   user_name: string;
   ticketNumber: string;
   attachment?: string;
+  htmlTemplateName: string;
 }
 
 class SendEmailService {
-  async execute({ to, user_name, content, attachment, subject, cc, ticketNumber }: ISendEmail) {
+  async execute({
+    to,
+    user_name,
+    content,
+    attachment,
+    subject,
+    cc,
+    ticketNumber,
+    htmlTemplateName,
+  }: ISendEmail) {
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -29,17 +39,20 @@ class SendEmailService {
 
     const configMail = {
       from: {
-        name: 'Suport Bot',
+        name: 'cib bot',
         address: 'suporte2@slpart.com.br',
       },
       to,
       cc,
-      subject: ` ${
-        subject
-          ? `${subject}: Novo chamado recebido ${ticketNumber}`
-          : `Seu chamado foi recebido com sucesso ${ticketNumber}`
-      } `,
-      html: await returnEmailTemplate(content, user_name, to, thereIsAttachment, ticketNumber),
+      subject,
+      html: await returnEmailTemplate(
+        content,
+        user_name,
+        to,
+        thereIsAttachment,
+        ticketNumber,
+        htmlTemplateName
+      ),
       attachments: attachment
         ? [
             {
@@ -60,9 +73,10 @@ var returnEmailTemplate = async (
   userName: string,
   userEmail: string,
   thereIsAttachment: string,
-  ticketNumber: string
+  ticketNumber: string,
+  htmlTemplateName: string
 ) => {
-  var emailTemplate = await fs.readFile(path.resolve('./src/public/email.html'), {
+  var emailTemplate = await fs.readFile(path.resolve(`./src/public/${htmlTemplateName}.html`), {
     encoding: 'utf-8',
   });
 

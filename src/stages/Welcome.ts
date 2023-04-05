@@ -22,6 +22,8 @@ export class Welcome {
     this.fileService = new FileService(client, message);
 
     try {
+      await client.startTyping(to);
+
       let userMessage = message.body;
 
       if (message.mimetype === 'audio/ogg; codecs=opus') {
@@ -37,6 +39,8 @@ export class Welcome {
     } catch (error) {
       console.error('🚀 ~ file: Welcome.ts:28 ~ Welcome ~ error:', error);
       await invalidOption.execute({ to, client });
+    } finally {
+      await client.stopTyping(to);
     }
   }
 

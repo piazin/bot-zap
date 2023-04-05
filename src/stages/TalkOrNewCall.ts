@@ -21,6 +21,8 @@ export class TalkOrNewCall {
     this.fileService = new FileService(client, message);
 
     try {
+      await client.startTyping(to);
+
       const options = {
         '1': {
           text: 'Para abrir um novo chamado, por favor, descreva o problema, dúvida ou requisição que você deseja fazer.',
@@ -54,7 +56,18 @@ export class TalkOrNewCall {
       }
 
       const response = await this.openIaService.createCompletion(
-        `Baseado neste neste texto \n\n ${userMessage} \n Qual dessas opções o usuario está querendo? \n\n 1 - Abrir um novo chamado \n 2 - Falar com um de nossos atendentes \n 3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT, 4 - Informações sobre a empressa SL \n`
+        `Baseado neste neste texto 
+          
+          ${userMessage}  
+          
+          Qual dessas opções o usuario precisa?
+          
+          1 - Abrir um novo chamado 
+          2 - Falar ou se conectar com um de nossos atendentes, Sergio, Andrey, Hernando, Lucas
+          3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT 
+          4 - Informações sobre a empressa SL
+          
+        Me responda com o numero da ação`
       );
 
       const selectedOption = parseInt(response.replace(/[^0-9]/g, ''));
@@ -72,6 +85,8 @@ export class TalkOrNewCall {
     } catch (error) {
       console.error('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:', error);
       return invalidOption.execute({ to, client });
+    } finally {
+      await client.stopTyping(to);
     }
   }
 

@@ -53,10 +53,18 @@ export class SendMessageToAttendant {
   }
 
   private async getAttendant(attendantRequest: string): Promise<IAttendantsPhoneNumber> {
-    const response = await this.openIaService
-      .createCompletion(`Baseado neste texto \n\n ${attendantRequest} com qual desses atendentes o usuário deseja? \n\n 1 - Lucas (Suporte de Infraestrutura) \n
-      \n 2 - Sergio (Suporte de Sistemas Senior/SE Suite)
-      \n 3 - Hernando (Suporte de Sistemas SAP/Frontline) \n\n Caso encontre uma opção parecida responda apenas com o numero da opção, caso não ache nenhuma opção parecida retorne apenas 0`);
+    const response = await this.openIaService.createCompletion(`
+      Baseado nesta mensagem: 
+
+      ${attendantRequest} 
+      
+      qual desses atendentes o usuário deseja falar?
+      
+      1 - Andrey
+      2 - Sergio 
+      3 - Hernando  
+      
+      Me responda apenas com o numero referente ao atendente`);
 
     const attendantId = response.replace(/[^0-9]/g, '');
 

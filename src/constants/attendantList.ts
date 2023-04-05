@@ -1,10 +1,11 @@
 export const attendantList = `
 Atendentes disponiveis 🧑‍💻
 
-1 - Lucas (Suporte de Infraestrutura)
-2 - Sergio (Suporte de Sistemas Senior/SE Suite)
-3 - Hernando (Suporte de Sistemas SAP/Frontline)
-`;
+  Andrey (Suporte de Infraestrutura)
+  Sergio (Suporte de Sistemas Senior/SE Suite)
+  Hernando (Suporte de Sistemas SAP/Frontline)
+
+Com qual deseja falar?`;
 
 export interface IAttendantsPhoneNumber {
   id: string;
@@ -15,7 +16,7 @@ export interface IAttendantsPhoneNumber {
 export const attendantsPhoneNumber: IAttendantsPhoneNumber[] = [
   {
     id: '1',
-    name: 'Lucas',
+    name: 'Andrey',
     number: '554391208707@c.us',
   },
   {

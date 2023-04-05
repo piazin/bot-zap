@@ -15,8 +15,8 @@ export class OpenIaService {
         model: 'text-davinci-003',
         prompt: message,
         temperature: 1,
-        max_tokens: 3000,
-        stop: ['/s'],
+        max_tokens: 2080,
+        stop: ['\n\n\n\n'],
       });
 
       return completation.data.choices[0].text;

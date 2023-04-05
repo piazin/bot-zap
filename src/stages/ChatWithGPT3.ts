@@ -5,6 +5,8 @@ import { StorageService } from '../services/storage.service';
 import { invalidOption } from './invalidOption';
 import { IStageParameters } from './stage.dto';
 
+let history = [];
+
 export class ChatWithGPT3 {
   private fileService: FileService;
   private readonly speechToText: SpeechToText;
@@ -38,7 +40,10 @@ export class ChatWithGPT3 {
         userQuestion = audioText;
       }
 
-      const response = await new OpenIaService().createCompletion(userQuestion);
+      history.push(userQuestion);
+      const response = await new OpenIaService().createCompletion(history.join('\n\n\n\n'));
+      history.push(response);
+
       await client.sendText(to, response);
 
       const idleTimeout = setTimeout(() => {

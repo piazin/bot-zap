@@ -7,6 +7,8 @@ import { StorageService } from '../services/storage.service';
 import { ResponseService } from '../services/response.service';
 import { sendEmailService } from '../services/sendEmail.service';
 
+let openingTicket = false;
+
 export class OpenNewTicket {
   private emailTo: string;
   private content: string;
@@ -33,6 +35,10 @@ export class OpenNewTicket {
     this.fileService = new FileService(client, message);
 
     try {
+      if (openingTicket) return;
+
+      await client.startTyping(to);
+
       let userMessage = message.body;
       if (message.mimetype === 'audio/ogg; codecs=opus')
         userMessage = await this.convertSpeechToText();
@@ -44,6 +50,8 @@ export class OpenNewTicket {
         await client.sendText(to, 'Muito bem, qual é o e-mail correto?');
         return;
       }
+
+      openingTicket = true;
 
       this.userName = message.sender.pushname;
       this.ticketNumber = this.generateTicketNumber();
@@ -58,6 +66,7 @@ export class OpenNewTicket {
       client.sendText(to, replyMessage);
 
       await this.getTicketType();
+      await this.sendTicketEmail();
       await this.sendEmailToSupport();
 
       client.sendText(
@@ -72,6 +81,8 @@ export class OpenNewTicket {
     } catch (error) {
       console.error('Error opening new ticket:', error);
       await client.sendText(to, 'Falha ao enviar o ticket, tente novamente mais tarde.');
+    } finally {
+      await client.stopTyping(to);
     }
   }
 
@@ -84,7 +95,7 @@ export class OpenNewTicket {
   }
 
   private async getTicketType(): Promise<void> {
-    const requestOrIncident = await this.openIaService.createCompletion(
+    let requestOrIncident = await this.openIaService.createCompletion(
       `isto é uma requisição ou incidente? \n ${this.content}, \n Responda apenas com requisição ou incidente`
     );
 
@@ -92,29 +103,33 @@ export class OpenNewTicket {
       ?.toLowerCase()
       .match(/\b(incidente|requisição)\b/g);
 
-    this.subject = matchLetter[0] === 'requisição' ? 'requisicao' : '';
+    requestOrIncident = matchLetter[0] === 'requisição' ? 'requisicao' : '';
+    this.subject = `${requestOrIncident}: Novo chamado recebido ${this.ticketNumber}`;
   }
 
   private async sendTicketEmail() {
     await sendEmailService.execute({
-      to: this.emailTo,
-      cc: this.userEmail,
-      user_name: this.userName,
-      content: this.content,
-      attachment: this.attachments,
-      ticketNumber: this.ticketNumber,
-    });
-  }
-
-  private async sendEmailToSupport() {
-    await sendEmailService.execute({
-      to: this.emailTo,
-      cc: this.userEmail,
+      to: this.userEmail,
+      cc: this.emailTo,
       subject: this.subject,
       user_name: this.userName,
       content: this.content,
       attachment: this.attachments,
       ticketNumber: this.ticketNumber,
+      htmlTemplateName: 'emailUserNewTicket',
+    });
+  }
+
+  private async sendEmailToSupport() {
+    await sendEmailService.execute({
+      to:
+        process.env.NODE_ENV === 'production' ? 'suporte2@slpart.com.br' : 'suporte2@slpart.com.br',
+      subject: this.subject,
+      user_name: this.userName,
+      content: this.content,
+      attachment: this.attachments,
+      ticketNumber: this.ticketNumber,
+      htmlTemplateName: 'email',
     });
   }
 
@@ -125,7 +140,7 @@ export class OpenNewTicket {
 
   private async getEmailConfirmation(userMessage: string): Promise<number> {
     const response = await this.openIaService.createCompletion(
-      `Está frase é uma confirmação ou uma negação? \n\n ${userMessage} \n\n Caso seja uma confirmação retorne 1 caso seja uma negação retorne 0, retorne apenas o numero`
+      `Está frase é uma confirmação ou uma negação? \n\n ${userMessage} \n\n Caso seja uma confirmação retorne 1 caso seja uma negação, ou um erro retorne 0, retorne apenas o numero`
     );
 
     const isEmailHasBeenConfirmed = response.replace(/[^0-9]/g, '');
