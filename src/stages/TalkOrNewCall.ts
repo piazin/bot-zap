@@ -67,7 +67,7 @@ export class TalkOrNewCall {
           3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT 
           4 - Informações sobre a empressa SL
           
-        Me responda com o numero da ação`
+        Me responda com o numero da ação ou com uma resposta que possa ajudar`
       );
 
       const selectedOption = parseInt(response.replace(/[^0-9]/g, ''));

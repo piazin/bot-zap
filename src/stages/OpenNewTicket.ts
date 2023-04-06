@@ -83,6 +83,7 @@ export class OpenNewTicket {
       await client.sendText(to, 'Falha ao enviar o ticket, tente novamente mais tarde.');
     } finally {
       await client.stopTyping(to);
+      openingTicket = false;
     }
   }
 
@@ -96,14 +97,16 @@ export class OpenNewTicket {
 
   private async getTicketType(): Promise<void> {
     let requestOrIncident = await this.openIaService.createCompletion(
-      `isto é uma requisição ou incidente? \n ${this.content}, \n Responda apenas com requisição ou incidente`
+      `Baseado nesta mensagem \n ${this.content}, \n isto é uma requisição ou incidente?  Responda apenas com requisição ou incidente`
     );
 
-    const matchLetter: RegExpMatchArray | null = requestOrIncident
+    let matchLetter: RegExpMatchArray | null = requestOrIncident
       ?.toLowerCase()
       .match(/\b(incidente|requisição)\b/g);
 
-    requestOrIncident = matchLetter[0] === 'requisição' ? 'requisicao:' : '';
+    requestOrIncident =
+      matchLetter?.length > 0 ? (matchLetter[0] === 'requisição' ? 'requisicao:' : '') : '';
+
     this.subject = `${requestOrIncident} Ticket ${this.ticketNumber}`;
   }
 

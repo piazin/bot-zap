@@ -17,7 +17,7 @@ export const attendantsPhoneNumber: IAttendantsPhoneNumber[] = [
   {
     id: '1',
     name: 'Andrey',
-    number: '554391208707@c.us',
+    number: '554391850807@c.us',
   },
   {
     id: '2',

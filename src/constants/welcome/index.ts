@@ -1,4 +1,4 @@
-export = `Quero que me devolva uma alternativa a estas mensagem: \n\n Olá {user}, eu sou o Cib,assistente virtual em desenvolvimento do T.I SL
+export = `Quero que me devolva uma alternativa a estas mensagem e mencione também que o Lucas se encontra de Ferias: \n\n Olá {user}, eu sou o Cib,assistente virtual em desenvolvimento do T.I SL
 
 Saudações {user}, sou o Cib, assistente virtual em desenvolvimento do T.I SL.
 

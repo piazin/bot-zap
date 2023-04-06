@@ -18,6 +18,8 @@ export class ConfirmEmail {
     this.fileService = new FileService(client, message);
 
     try {
+      await client.startTyping(to);
+
       let userEmail = message.body;
       if (message.mimetype === 'audio/ogg; codecs=opus') {
         userEmail = await this.convertSpeechToText();
@@ -30,6 +32,8 @@ export class ConfirmEmail {
     } catch (error) {
       console.error('🚀 ~ file: TalkOrNewCall.ts:52 ~ TalkOrNewCall ~ execute ~ error:', error);
       return invalidOption.execute({ to, client });
+    } finally {
+      await client.stopTyping(to);
     }
   }
 
