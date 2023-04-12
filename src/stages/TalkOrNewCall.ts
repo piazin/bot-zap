@@ -71,6 +71,14 @@ export class TalkOrNewCall {
       );
 
       const selectedOption = parseInt(response.replace(/[^0-9]/g, ''));
+      if (selectedOption === 4) {
+        await client.sendText(
+          to,
+          'Infelizmente, a opção não está mais disponível devido a restrições de recursos.'
+        );
+        return;
+      }
+
       const option = options[selectedOption];
 
       if (!option) {

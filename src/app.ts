@@ -5,7 +5,7 @@ import { create, Whatsapp, Message } from '@wppconnect-team/wppconnect';
 
 config();
 
-const MAX_IDLE_TIME_MS = 600000;
+const MAX_IDLE_TIME_MS = 6000000;
 
 create({ session: 'support-ti', disableWelcome: true })
   .then((client) => start(client))

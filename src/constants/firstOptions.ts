@@ -4,7 +4,7 @@ export const firstOptions = `Aqui está um resumo em tópicos das maneiras pelas
 
 👨‍💻 Conectar você com um de nossos atendentes (beta)
 
-🏭 Fornecer informações sobre nossa empresa e serviços (alpha)
+🏭 Fornecer informações sobre nossa empresa e serviços (desativado) ❌
 
 🦾 Conversar com o meu amigo, Chat GPT3!
 

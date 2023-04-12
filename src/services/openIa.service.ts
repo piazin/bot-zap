@@ -3,7 +3,7 @@ import { Configuration, OpenAIApi } from 'openai';
 export class OpenIaService {
   constructor(
     private readonly configuration = new Configuration({
-      organization: 'org-bvRQkK5Qyl0V8lhPpHirrOEv',
+      organization: 'org-oy1he0Y0jauwp7NtqpRWtLTH',
       apiKey: process.env.OPENAI_API_KEY,
     }),
     private readonly openai = new OpenAIApi(configuration)
@@ -15,7 +15,7 @@ export class OpenIaService {
         model: 'text-davinci-003',
         prompt: message,
         temperature: 1,
-        max_tokens: 2080,
+        max_tokens: 1000,
         stop: ['\n\n\n\n'],
       });
 
