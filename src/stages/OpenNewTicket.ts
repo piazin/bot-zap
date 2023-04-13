@@ -71,7 +71,7 @@ export class OpenNewTicket {
 
       client.sendText(
         to,
-        'Seu chamado foi aberto com sucesso! Em breve você receberá atualizações sobre o status do chamado. Obrigado!'
+        `Seu chamado nº ${this.ticketNumber} foi aberto com sucesso! Em breve você receberá atualizações sobre o status do chamado. Obrigado!`
       );
 
       if (this.storageService.getPathSuportImg())

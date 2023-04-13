@@ -22,13 +22,28 @@ export class ReceiveImageWithTheProblem {
 
     try {
       const replyMessage = this.responseService.getRandomAnswer('receiveImageWithTheProblem');
-      client.sendText(to, replyMessage);
+
+      if (message.caption) {
+        client.sendText(
+          to,
+          'Notei que você já enviou uma imagem. Se você quiser mantê-la, digite "sim". Se quiser enviar uma imagem diferente, envia-a, lembre-se de enviar apenas uma imagem'
+        );
+      } else {
+        client.sendText(to, replyMessage);
+      }
 
       let problemMessage = message.body;
       if (message.mimetype === 'audio/ogg; codecs=opus')
         problemMessage = await this.convertSpeechToText();
 
+      if (message.caption) problemMessage = message.caption;
+
       this.storageService.setProblemOrRequestMessage(problemMessage);
+
+      if (message.isMedia || message.isMMS) {
+        var path = await this.fileService.downloadFile();
+        this.storageService.setPathSuportImg(path);
+      }
 
       var stage = this.storageService.getTicket() ? 5 : 3;
       this.storageService.setStage(stage);

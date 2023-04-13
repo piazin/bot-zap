@@ -63,7 +63,7 @@ export class TalkOrNewCall {
           Qual dessas opções o usuario precisa?
           
           1 - Abrir um novo chamado 
-          2 - Falar ou se conectar com um de nossos atendentes, Sergio, Andrey, Hernando, Lucas
+          2 - Falar ou se conectar com alguém do T.I ou um de nossos atendentes, Sergio, Andrey, Hernando, Lucas
           3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT 
           4 - Informações sobre a empressa SL
           
