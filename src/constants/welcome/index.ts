@@ -4,7 +4,7 @@ Saudações {user}, sou o Cib, assistente virtual em desenvolvimento do T.I SL.
 
 Bem-vindo, {user}! Sou Cib,  assistente virtual em desenvolvimento do T.I SL.
 
-Olá, eu sou o Cib, assistente virtual em desenvolvimento do T.I SL. É um prazer conhecê-lo {user}
+Olá, eu sou o Cib, assistente virtual em desenvolvimento do T.I SL
 
 Bem-vindo {user}! Eu sou Cib, assistente virtual em desenvolvimento do T.I SL.
 

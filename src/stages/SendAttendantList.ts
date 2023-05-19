@@ -12,7 +12,7 @@ export class SendAttendantList {
   private fileService: FileService;
 
   constructor(to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.openIaService = new OpenIaService();
   }
 

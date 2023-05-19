@@ -5,6 +5,7 @@ import { StorageService } from '../services/storage.service';
 import { ResponseService } from '../services/response.service';
 import { FileService } from '../services/file.service';
 import { SpeechToText } from '../apis/SpeechToText';
+import { storage } from '../storage';
 
 export class Welcome {
   private fileService: FileService;
@@ -13,7 +14,7 @@ export class Welcome {
   private readonly storageService: StorageService;
 
   constructor(to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.speechToText = new SpeechToText();
   }
 
@@ -24,9 +25,9 @@ export class Welcome {
     try {
       await client.startTyping(to);
 
-      let userMessage = message.body;
+      let { body: userMessage, mimetype } = message;
 
-      if (message.mimetype === 'audio/ogg; codecs=opus') {
+      if (mimetype === 'audio/ogg; codecs=opus') {
         userMessage = await this.convertSpeechToText();
       }
 

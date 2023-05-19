@@ -1,11 +1,7 @@
-export const firstOptions = `Aqui está um resumo em tópicos das maneiras pelas quais posso ajudá-lo:
+export const firstOptions = `Como posso te ajudar?
 
-💡 Abrir um novo chamado 
+  1 - Abrir um novo chamado 
 
-👨‍💻 Conectar você com um de nossos atendentes (beta)
+  2 - Conectar você com um de nossos atendentes (beta)
 
-🏭 Fornecer informações sobre nossa empresa e serviços (desativado) ❌
-
-🦾 Conversar com o meu amigo, Chat GPT3!
-
-Como posso ser útil?`;
+Por favor selecione uma opção!`;

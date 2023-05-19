@@ -2,18 +2,41 @@ import { invalidOption } from './invalidOption';
 import { IStageParameters } from './stage.dto';
 import { StorageService } from '../services/storage.service';
 import { FileService } from '../services/file.service';
-import { OpenIaService } from '../services/openIa.service';
 import { SpeechToText } from '../apis/SpeechToText';
+import { storage } from '../storage';
+
+const OPTIONS = {
+  '1': {
+    text: 'Para abrir um novo chamado, por favor, descreva o problema, dúvida ou requisição que você deseja fazer.',
+    isTicket: true,
+    nextStage: 2,
+  },
+  '2': {
+    text: 'Faça uma breve descrição do problema que está enfretando...',
+    isTicket: false,
+    nextStage: 2,
+  },
+  '3': {
+    text: 'Qual sua pergunta?',
+    isTicket: false,
+    nextStage: 8,
+    toLeave: true,
+  },
+  '4': {
+    text: 'Oque deseja saber sobre a empressa?',
+    isTicket: false,
+    nextStage: 9,
+    toLeave: true,
+  },
+};
 
 export class TalkOrNewCall {
   private readonly storageService: StorageService;
-  private readonly openIaService: OpenIaService;
   private readonly speechToText: SpeechToText;
   private fileService: FileService;
 
   constructor(to: string) {
-    this.storageService = new StorageService(to);
-    this.openIaService = new OpenIaService();
+    this.storageService = new StorageService(to, storage);
     this.speechToText = new SpeechToText();
   }
 
@@ -23,63 +46,16 @@ export class TalkOrNewCall {
     try {
       await client.startTyping(to);
 
-      const options = {
-        '1': {
-          text: 'Para abrir um novo chamado, por favor, descreva o problema, dúvida ou requisição que você deseja fazer.',
-          isTicket: true,
-          nextStage: 2,
-        },
-        '2': {
-          text: 'Faça uma breve descrição do problema que está enfretando...',
-          isTicket: false,
-          nextStage: 2,
-        },
-        '3': {
-          text: 'Qual sua pergunta?',
-          isTicket: false,
-          nextStage: 8,
-          toLeave: true,
-        },
-        '4': {
-          text: 'Oque deseja saber sobre a empressa?',
-          isTicket: false,
-          nextStage: 9,
-          toLeave: true,
-        },
-      };
+      let { body: userMessage, mimetype } = message;
 
-      let userMessage = message.body;
-
-      if (message.mimetype === 'audio/ogg; codecs=opus') {
+      if (mimetype === 'audio/ogg; codecs=opus') {
         const audioText = await this.convertSpeechToText();
         userMessage = audioText;
       }
 
-      const response = await this.openIaService.createCompletion(
-        `Baseado neste neste texto 
-          
-          ${userMessage}  
-          
-          Qual dessas opções o usuario precisa?
-          
-          1 - Abrir um novo chamado 
-          2 - Falar ou se conectar com alguém do T.I ou um de nossos atendentes, Sergio, Andrey, Hernando, Lucas
-          3 - Conversar com chat GPT ou Gpp ou pt ou gt ou GBT 
-          4 - Informações sobre a empressa SL
-          
-        Me responda com o numero da ação ou com uma resposta que possa ajudar`
-      );
+      const selectedOption = parseInt(userMessage.replace(/[^0-9]/g, ''));
 
-      const selectedOption = parseInt(response.replace(/[^0-9]/g, ''));
-      if (selectedOption === 4) {
-        await client.sendText(
-          to,
-          'Infelizmente, a opção não está mais disponível devido a restrições de recursos.'
-        );
-        return;
-      }
-
-      const option = options[selectedOption];
+      const option = OPTIONS[selectedOption] ?? null;
 
       if (!option) {
         return invalidOption.execute({ to, client });

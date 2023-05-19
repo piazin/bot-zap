@@ -3,6 +3,7 @@ import { invalidOption } from './invalidOption';
 import { StorageService } from '../services/storage.service';
 import { SpeechToText } from '../apis/SpeechToText';
 import { FileService } from '../services/file.service';
+import { storage } from '../storage';
 
 export class ConfirmEmail {
   private fileService: FileService;
@@ -10,7 +11,7 @@ export class ConfirmEmail {
   private readonly storageService: StorageService;
 
   constructor(private readonly to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.speechToText = new SpeechToText();
   }
 

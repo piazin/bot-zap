@@ -2,6 +2,14 @@ import { storage } from '../storage';
 import { IStorage } from '../storage';
 
 export class StorageService {
+  private readonly to: string;
+  private readonly storage: Record<string, IStorage>;
+
+  constructor(to: string, storage: Record<string, IStorage>) {
+    this.to = to;
+    this.storage = storage;
+  }
+
   private getUserStorage(): IStorage {
     if (!storage[this.to]) {
       storage[this.to] = {
@@ -9,12 +17,6 @@ export class StorageService {
       };
     }
     return storage[this.to];
-  }
-
-  private readonly to: string;
-
-  constructor(to: string) {
-    this.to = to;
   }
 
   getStage(): number {

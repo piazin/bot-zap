@@ -2,6 +2,7 @@ import { SpeechToText } from '../apis/SpeechToText';
 import { FileService } from '../services/file.service';
 import { OpenIaService } from '../services/openIa.service';
 import { StorageService } from '../services/storage.service';
+import { storage } from '../storage';
 import { invalidOption } from './invalidOption';
 import { IStageParameters } from './stage.dto';
 
@@ -14,7 +15,7 @@ export class ChatWithGPT3 {
   private static readonly MAX_IDLE_TIME_MS = 600000;
 
   constructor(to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.speechToText = new SpeechToText();
   }
 

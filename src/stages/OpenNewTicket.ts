@@ -6,6 +6,8 @@ import { OpenIaService } from '../services/openIa.service';
 import { StorageService } from '../services/storage.service';
 import { ResponseService } from '../services/response.service';
 import { sendEmailService } from '../services/sendEmail.service';
+import { storage } from '../storage';
+import TicketNumberGenerator from '../helpers/TicketNumberGenerator';
 
 let openingTicket = false;
 
@@ -25,7 +27,7 @@ export class OpenNewTicket {
   private readonly responseService: ResponseService;
 
   constructor(to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.speechToText = new SpeechToText();
     this.responseService = new ResponseService();
     this.openIaService = new OpenIaService();
@@ -39,9 +41,8 @@ export class OpenNewTicket {
 
       await client.startTyping(to);
 
-      let userMessage = message.body;
-      if (message.mimetype === 'audio/ogg; codecs=opus')
-        userMessage = await this.convertSpeechToText();
+      let { body: userMessage, mimetype, sender } = message;
+      if (mimetype === 'audio/ogg; codecs=opus') userMessage = await this.convertSpeechToText();
 
       const isEmailHasBeenConfirmed = await this.getEmailConfirmation(userMessage);
 
@@ -53,8 +54,8 @@ export class OpenNewTicket {
 
       openingTicket = true;
 
-      this.userName = message.sender.pushname;
-      this.ticketNumber = this.generateTicketNumber();
+      this.userName = sender.pushname;
+      this.ticketNumber = TicketNumberGenerator.generate();
       this.userEmail = this.storageService.getUserEmail();
       this.content = this.storageService.getProblemOrRequestMessage();
       this.emailTo = process.env.NODE_ENV === 'production' ? 'ti@slpart.com.br' : this.userEmail;
@@ -134,11 +135,6 @@ export class OpenNewTicket {
       ticketNumber: this.ticketNumber,
       htmlTemplateName: 'email',
     });
-  }
-
-  private generateTicketNumber(): string {
-    const randomNumber = Math.floor(100000 + Math.random() * 900000);
-    return String(randomNumber);
   }
 
   private async getEmailConfirmation(userMessage: string): Promise<number> {

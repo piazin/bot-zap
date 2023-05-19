@@ -17,7 +17,7 @@ export class InfoSL {
   private readonly MAX_IDLE_TIME_MS = 600000;
 
   constructor(to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.openIaService = new OpenIaService();
   }
 

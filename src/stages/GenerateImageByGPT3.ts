@@ -6,6 +6,7 @@ import { deleteImage } from '../utils/deleteImage';
 import { StorageService } from '../services/storage.service';
 import { SpeechToText } from '../apis/SpeechToText';
 import { FileService } from '../services/file.service';
+import { storage } from '../storage';
 
 export class GenerateImageByGPT3 {
   private fileService: FileService;
@@ -14,7 +15,7 @@ export class GenerateImageByGPT3 {
   private readonly MAX_IDLE_TIME_MS: number = 600000;
 
   constructor(to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.speechToText = new SpeechToText();
   }
 
@@ -52,7 +53,10 @@ export class GenerateImageByGPT3 {
 
       idleTime.refresh();
     } catch (error) {
-      console.error('🚀 ~ file: GenerateImageByGPT3.ts:30 ~ GenerateImageByGPT3 ~ execute ~ error:', error);
+      console.error(
+        '🚀 ~ file: GenerateImageByGPT3.ts:30 ~ GenerateImageByGPT3 ~ execute ~ error:',
+        error
+      );
       await client.sendText(to, 'Ops! Não foi possivel gerar está imagem :(');
     } finally {
       await client.stopTyping(to);

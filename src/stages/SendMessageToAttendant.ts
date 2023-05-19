@@ -5,6 +5,7 @@ import { attendantsPhoneNumber, IAttendantsPhoneNumber } from '../constants/atte
 import { SpeechToText } from '../apis/SpeechToText';
 import { FileService } from '../services/file.service';
 import { OpenIaService } from '../services/openIa.service';
+import { storage } from '../storage';
 
 export class SendMessageToAttendant {
   private fileService: FileService;
@@ -13,7 +14,7 @@ export class SendMessageToAttendant {
   private readonly storageService: StorageService;
 
   constructor(private readonly to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.speechToText = new SpeechToText();
     this.openIaService = new OpenIaService();
   }
@@ -24,9 +25,9 @@ export class SendMessageToAttendant {
     try {
       await client.startTyping(to);
 
-      let attendantRequest = message.body;
+      let { body: attendantRequest, mimetype, sender, from, notifyName } = message;
 
-      if (message.mimetype === 'audio/ogg; codecs=opus') {
+      if (mimetype === 'audio/ogg; codecs=opus') {
         attendantRequest = await this.convertSpeechToText();
       }
 
@@ -40,10 +41,10 @@ export class SendMessageToAttendant {
       await Promise.all([
         client.sendText(
           thisAttendantExist.number,
-          `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${message.sender.pushname} te enviou um novo chamado, com o seguinte problema: \n\n ${problemOrRequestMessage}`
+          `Olá ${thisAttendantExist.name},\n\nUsuário(a): ${sender.pushname} te enviou um novo chamado, com o seguinte problema: \n\n ${problemOrRequestMessage}`
         ),
         pathSuportImg && client.sendImage(thisAttendantExist.number, pathSuportImg, 'File suport'),
-        client.sendContactVcard(thisAttendantExist.number, message.from, message.notifyName),
+        client.sendContactVcard(thisAttendantExist.number, from, notifyName),
         client.sendText(to, 'Tudo certo! Em breve o atendente entrará em contato.'),
       ]);
 

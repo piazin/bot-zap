@@ -4,6 +4,7 @@ import { SpeechToText } from '../apis/SpeechToText';
 import { FileService } from '../services/file.service';
 import { StorageService } from '../services/storage.service';
 import { ResponseService } from '../services/response.service';
+import { storage } from '../storage';
 
 export class ReceiveImageWithTheProblem {
   private fileService: FileService;
@@ -12,7 +13,7 @@ export class ReceiveImageWithTheProblem {
   private readonly responseService: ResponseService;
 
   constructor(to: string) {
-    this.storageService = new StorageService(to);
+    this.storageService = new StorageService(to, storage);
     this.speechToText = new SpeechToText();
     this.responseService = new ResponseService();
   }
@@ -22,8 +23,9 @@ export class ReceiveImageWithTheProblem {
 
     try {
       const replyMessage = this.responseService.getRandomAnswer('receiveImageWithTheProblem');
+      let { caption, body: problemMessage, mimetype, isMedia, isMMS } = message;
 
-      if (message.caption) {
+      if (caption) {
         client.sendText(
           to,
           'Notei que você já enviou uma imagem. Se você quiser mantê-la, digite "sim". Se quiser enviar uma imagem diferente, envia-a, lembre-se de enviar apenas uma imagem'
@@ -32,15 +34,13 @@ export class ReceiveImageWithTheProblem {
         client.sendText(to, replyMessage);
       }
 
-      let problemMessage = message.body;
-      if (message.mimetype === 'audio/ogg; codecs=opus')
-        problemMessage = await this.convertSpeechToText();
+      if (mimetype === 'audio/ogg; codecs=opus') problemMessage = await this.convertSpeechToText();
 
-      if (message.caption) problemMessage = message.caption;
+      if (caption) problemMessage = caption;
 
       this.storageService.setProblemOrRequestMessage(problemMessage);
 
-      if (message.isMedia || message.isMMS) {
+      if (isMedia || isMMS) {
         var path = await this.fileService.downloadFile();
         this.storageService.setPathSuportImg(path);
       }

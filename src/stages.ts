@@ -13,8 +13,20 @@ import {
 
 interface IStage {
   description: string;
-  stage: any;
+  stage: StageClass;
 }
+
+type StageClass =
+  | typeof Welcome
+  | typeof TalkOrNewCall
+  | typeof SendAttendantList
+  | typeof ReceiveImageWithTheProblem
+  | typeof SendMessageToAttendant
+  | typeof RequestUserEmail
+  | typeof OpenNewTicket
+  | typeof ChatWithGPT3
+  | typeof ConfirmEmail
+  | typeof InfoSL;
 
 export const stages: IStage[] = [
   {
